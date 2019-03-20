@@ -9,10 +9,10 @@ class Item {
     
     get render() {return `
         <div class="goodsItem">
-        <img class="goodsItem__img" src=${this.src}>
-        <h3>${this.title.toUpperCase()}</h3>
-        <p>${this.price} rub</p>
-        <button class="buy btn">Добавить</button>
+            <img class="goodsItem__img" src=${this.src}>
+            <h3>${this.title.toUpperCase()}</h3>
+            <p>${this.price} rub</p>
+            <button class="buy btn">Добавить</button>
         </div>
     `;}
 }
