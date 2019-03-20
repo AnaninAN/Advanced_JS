@@ -7,7 +7,7 @@ class Item {
         this.src = src;
     }
     
-    render() {return `
+    get render() {return `
         <div class="goodsItem">
         <img class="goodsItem__img" src=${this.src}>
         <h3>${this.title.toUpperCase()}</h3>
@@ -22,7 +22,7 @@ class ItemsList {
         this.items = [];
     }
     
-    getItems() {
+    get getItems() {
         this.items = [
             {title: 'Shirt', price: 1500, src: 'img/catalog/small/shirt.jpg'},
             {title: 'jeans', price: 3500, src: 'img/catalog/small/jeans.jpg'},
@@ -35,16 +35,13 @@ class ItemsList {
         this.items = this.items.map(item => new Item(item.title, item.price, item.src));
     }
     
-    render() {
-        return this.items.map(item => item.render()).join('');
+    get render() {
+        return this.items.map(item => item.render).join('');
     }
     
-    compGoods() {
-        let sum = 0;
-        for (let i=0; i<this.items.length;i++){
-            sum += this.items[i].price;
-        }
-        return (sum != 0) ? `Всего товаров: ${this.items.length} шт. на общую сумму - ${sum}` : `Товаров нет`;
+    get compGoods() {
+        const sum =  this.items.reduce((sum, item) => sum + item.price,0);
+        return (sum !== 0) ? `Всего товаров: ${this.items.length} шт. на общую сумму - ${sum}` : `Товаров нет`;
     }
     
 }
@@ -94,10 +91,10 @@ class CartList {
 
 function init() {
     const items = new ItemsList();
-    items.getItems();
+    items.getItems;
     
-    document.querySelector('.goodsList').innerHTML = items.render();
-    document.querySelector('.compGoods').innerHTML = items.compGoods();
+    document.querySelector('.goodsList').innerHTML = items.render;
+    document.querySelector('.compGoods').innerHTML = items.compGoods;
 }
 
 window.addEventListener('load', init);
