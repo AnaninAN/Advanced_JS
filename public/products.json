@@ -1,0 +1,8 @@
+[
+    {"title": "Shirt", "price": 1500, "src": "img/catalog/small/shirt.jpg"},
+    {"title": "jeans", "price": 3500, "src": "img/catalog/small/jeans.jpg"},
+    {"title": "jacket", "price": 7000, "src": "img/catalog/small/jacket.jpg"},
+    {"title": "shorts", "price": 750, "src": "img/catalog/small/shorts.jpg"},
+    {"title": "sweater", "price": 2300, "src": "img/catalog/small/sweater.jpg"},
+    {"title": "blazer", "price": 5500, "src": "img/catalog/small/blazer.jpg"}
+]
