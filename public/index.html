@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>eShop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="app.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="container">
+                <input type="text" class="searchQuery" placeholder="Введите строку для поиска" v-model="search">
+                <button class="buy btnSearch" @click="filterItems">Поиск</button>
+                <button class="buy btnSearch" v-if="isFilter" @click="clearFilter">Очистить фильтр</button>
+            </div>
+        </header>
+        <div class="container main">
+            <div class="catalog">
+                <div class="poster" v-for="item in renderItems">
+                    <div class="poster__header">
+                        <a class="bigImg" href="#" name="">
+                            <img class="smallImg" :src="item.src">
+                        </a>
+                    </div>
+                    <div class="poster__footer">
+                        <div class="poster__footer__name">{{ item.title.toUpperCase() }}</div>
+                        <div class="poster__footer__price">{{ item.price + ' rub' }}</div>
+                        <button class="buy" @click="buy(item)">Купить</button>
+                    </div>
+                </div>
+            </div>
+            <div class="cart">
+                <table cellspacing="0" class="cartProduct" v-if="isVisibleCart">
+                    <tr class="headerCart">
+                    <th>product</th>
+                    <th>price</th>
+                    <th>quantity</th>
+                    <th>total</th>
+                    <th>action</th>
+                    </tr>
+                    <tr class="bodyCart" v-for="item in renderCart">
+                        <th>{{ item.title.toUpperCase() }}</th>
+                        <th>{{ item.price }}</th>
+                        <th>{{ item.quantity }}</th>
+                        <th>{{ item.price*item.quantity }}</th>
+                        <th>
+                            <button class="buy delProdCart" @click="del(item)">X</button>
+                        </th>
+                    </tr>
+                </table>
+                <div class="totalCart" v-if="isVisibleCart">Общая сумма корзины: {{ totalCart }}</div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+</body>
+
+</html>
