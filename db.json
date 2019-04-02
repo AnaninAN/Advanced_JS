@@ -1,0 +1,41 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "title": "Shirt",
+      "price": 1500,
+      "src": "img/catalog/small/shirt.jpg"
+    },
+    {
+      "id": 2,
+      "title": "jeans",
+      "price": 3500,
+      "src": "img/catalog/small/jeans.jpg"
+    },
+    {
+      "id": 3,
+      "title": "jacket",
+      "price": 7000,
+      "src": "img/catalog/small/jacket.jpg"
+    },
+    {
+      "id": 4,
+      "title": "shorts",
+      "price": 750,
+      "src": "img/catalog/small/shorts.jpg"
+    },
+    {
+      "id": 5,
+      "title": "sweater",
+      "price": 2300,
+      "src": "img/catalog/small/sweater.jpg"
+    },
+    {
+      "id": 6,
+      "title": "blazer",
+      "price": 5500,
+      "src": "img/catalog/small/blazer.jpg"
+    }
+  ],
+  "cart": []
+}
