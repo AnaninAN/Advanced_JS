@@ -39,20 +39,6 @@
   ],
   "cart": [
     {
-      "id": 1,
-      "title": "Shirt",
-      "price": 1500,
-      "src": "img/catalog/small/shirt.jpg",
-      "quantity": 2
-    },
-    {
-      "id": 3,
-      "title": "jacket",
-      "price": 7000,
-      "src": "img/catalog/small/jacket.jpg",
-      "quantity": 3
-    },
-    {
       "id": 2,
       "title": "jeans",
       "price": 3500,
@@ -60,17 +46,10 @@
       "quantity": 1
     },
     {
-      "id": 4,
-      "title": "shorts",
-      "price": 750,
-      "src": "img/catalog/small/shorts.jpg",
-      "quantity": 1
-    },
-    {
-      "id": 5,
-      "title": "sweater",
-      "price": 2300,
-      "src": "img/catalog/small/sweater.jpg",
+      "id": 3,
+      "title": "jacket",
+      "price": 7000,
+      "src": "img/catalog/small/jacket.jpg",
       "quantity": 1
     }
   ]

@@ -1,23 +1,15 @@
 window.onload = () => {
     const API_URL = 'http://localhost:3000';
-
-    Vue.component('search', {
-        props: ['search','isFilter'],
+    
+    Vue.component('search-products', {
+        props: ['search','isfilter','filteritems','clearfilter'],
         template:`
         <div class="container">
             <input type="text" class="searchQuery" placeholder="Введите строку для поиска" v-model="search">
-            <button class="buy btnSearch" @click="filterItems">Поиск</button>
-            <button class="buy btnSearch" v-if="isFilter" @click="clearFilter">Очистить фильтр</button>
+            <button class="buy btnSearch" @click="filteritems">Поиск</button>
+            <button class="buy btnSearch" v-if="isfilter" @click="clearfilter">Очистить фильтр</button>
         </div>
-        `,
-        methods: {
-            filterItems() {
-                this.$emit('onfind','');
-            },
-            clearFilter() {
-                this.$emit('onclear','');
-            }
-        }
+        `
     });
     
     Vue.component('product-item', {
@@ -85,11 +77,11 @@ window.onload = () => {
     });
     
     Vue.component('cart', {
-        props: ['items','isVisibleCart','totalCart'],
+        props: ['items','isvisiblecart','totalcart'],
         template:`
         <div class="cart">
             <h2>Корзина</h2>
-            <table cellspacing="0" class="cartProduct" v-if="isVisibleCart">
+            <table cellspacing="0" class="cartProduct" v-if="isvisiblecart">
                 <tr class="headerCart">
                     <th>product</th>
                     <th>price</th>
@@ -99,8 +91,8 @@ window.onload = () => {
                 </tr>
                 <cart-item class="bodyCart" @ondel="handleDelClick" v-for="item in items" :item="item"></cart-item>
             </table>
-            <div class="totalCart" v-if="isVisibleCart">Общая сумма корзины: {{ totalCart }}</div>
-            <h3 v-if="!isVisibleCart">Корзина пуста</h3>
+            <div class="totalCart" v-if="isvisiblecart">Общая сумма корзины: {{ totalcart }}</div>
+            <h3 v-if="!isvisiblecart">Корзина пуста</h3>
         </div>
         `,
         methods: {
@@ -135,8 +127,8 @@ window.onload = () => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({quantity: cartItem.quantity + 1})   
                     })
-                        .then(response => response.json())
-                        .then(updated => {
+                        .then((response) => response.json())
+                        .then((updated) => {
                             const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
                             Vue.set(this.cart, itemIdx, updated);
                         }
@@ -147,8 +139,8 @@ window.onload = () => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({...item, quantity: 1})
                     })
-                        .then(response => response.json())
-                        .then(created => {
+                        .then((response) => response.json())
+                        .then((created) => {
                             this.cart.push(created); 
                         }
                     );
@@ -161,8 +153,8 @@ window.onload = () => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({quantity: item.quantity - 1})   
                     })
-                        .then(response => response.json())
-                        .then(updated => {
+                        .then((response) => response.json())
+                        .then((updated) => {
                             const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
                             Vue.set(this.cart, itemIdx, updated);
                     });
@@ -198,7 +190,7 @@ window.onload = () => {
                 return this.items.filter((item) => regexp.test(item.title));
             },
             isFilter() {
-                return this.searchQuery !== '';
+                return this.search !== '';
             },
             renderCart() {
                 return this.cart;
