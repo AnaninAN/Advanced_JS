@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700,900');
+@widthCont: 1200px;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+a {
+    font-family: 'Lato', sans-serif;
+    color: #222222;
+}
+
+#app {
+    display: none;
+}
+
+.header {
+    padding: 15px 0;
+}
+
+.container {
+    max-width: @widthCont;
+    margin: 0 auto;
+}
+
+.main {
+    display: flex;
+}
+
+.catalog,
+.cart {
+    width: @widthCont / 2;
+}
+
+.catalog {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.poster {
+    height: 265px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid orangered;
+}
+
+.poster__header,
+.poster__header img {
+    width: 150px;
+    height: 150px;
+}
+
+.poster__footer {
+    width: 150px;
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .poster__footer__name {
+        font-size: 15px;
+        font-weight: 900;
+    }
+    .poster__footer__price {
+        font-size: 16px;
+        font-weight: 400;
+        text-align: center;
+    }
+}
+
+.buy {
+    outline: none;
+    height: 30px;
+    border: 1px solid orangered;
+    background-color: orangered;
+    padding: 5px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: .3s;
+    &:hover {
+        background-color: white;
+        color: orangered;
+        transition: .3s;
+    }
+    &:active {
+        background-color: orangered;
+        color: white;
+        transition: .3s;
+    }
+}
+
+.searchQuery {
+    margin-left: 5px;
+    outline: none;
+    height: 30px;
+    width: 205px;
+    border: 1px solid orangered;
+    padding: 10px;
+    font-weight: 700;
+    border-radius: 5px;
+}
+
+.btnSearch {
+    background-color: white;
+    color: orangered;
+    border-radius: 5px;
+    &:hover {
+        background-color: orangered;
+        color: white;
+        transition: .3s;
+    }
+    &:active {
+        background-color: white;
+        color: orangered;
+        transition: .3s;
+    }
+}
+
+.cart {
+    h2 {
+        margin-bottom: 10px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+}
+
+h3 {
+    margin-top: 10px;
+    text-align: center;
+    color: orangered;
+}
+
+.cartProduct {
+    width: 95%;
+    float: right;
+    .headerCart th {
+        font-weight: 900;
+        text-transform: uppercase;
+        color: orangered;
+        border-bottom: 3px solid orangered;
+    }
+    .bodyCart th {
+        padding: 10px 0;
+    }
+    .delProdCart {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+.totalCart {
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: orangered;  
+}

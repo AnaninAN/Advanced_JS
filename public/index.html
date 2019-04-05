@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>eShop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="app.js"></script>
+</head>
+
+<body>
+    <div id="app" :style="{ display: display }">
+        <header class="header">
+            <search :search="search" @onfind="filterItems" @onclear="clearFilter"></search>
+        </header>
+        <div class="container main">
+            <products @onbuy="handleBuyClick" :items="renderItems"></products>
+            <cart @ondel="handleDelClick" :items="renderCart"></cart>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+</body>
+
+</html>
