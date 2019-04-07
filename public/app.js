@@ -2,7 +2,6 @@ window.onload = () => {
     const API_URL = 'http://localhost:3000';
     
     Vue.component('search-products', {
-        props: [],
         template:`
         <div class="container">
             <input type="text" class="searchQuery" placeholder="Введите строку для поиска" v-model="searchQuery">
@@ -12,7 +11,7 @@ window.onload = () => {
         `,
         data() {
             return {
-                searchQuery: ''
+                searchQuery: '',
             }
         },
         computed: {
@@ -27,7 +26,7 @@ window.onload = () => {
             },
             handleSearchClick() {
                 this.$emit('onsearch', this.searchQuery);
-            }
+            },
         }
     });
     
@@ -50,7 +49,7 @@ window.onload = () => {
         methods: {
             handleBuyClick(item) {
                 this.$emit('onbuy', item);
-            }
+            },
         }
     });
     
@@ -64,7 +63,7 @@ window.onload = () => {
         `,
         data() {
             return {
-                items: []
+                items: [],
             }
         },
         mounted() {
@@ -87,7 +86,7 @@ window.onload = () => {
         methods: {
             handleBuyClick(item) {
                 this.$emit('onbuy', item);
-            }
+            },
         }
     });
     
@@ -136,12 +135,12 @@ window.onload = () => {
             },
             totalCart() {
                 return this.cart.reduce((sum, item) => sum + item.price*item.quantity, 0);
-            }  
+            },
         },
         methods: {
             handleDelClick(item) {
                 this.$emit('ondel', item);
-            }
+            },
         }
     });
     
@@ -150,12 +149,14 @@ window.onload = () => {
         data: {
             searchQuery: '',
             cart: [],
+            display: 'none',
         },
         mounted() {
             fetch(`${API_URL}/cart`)
                 .then((response) => response.json())
                 .then((items) => {
                     this.cart = items;
+                    this.display = 'block';
                 });
         },
         methods: {
@@ -212,7 +213,7 @@ window.onload = () => {
                             }
                         );
                 }
-            }
+            },
         }
     });
 }
