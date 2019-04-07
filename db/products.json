@@ -1,5 +1,4 @@
-{
-  "products": [
+[
     {
       "id": 1,
       "title": "Shirt",
@@ -36,6 +35,4 @@
       "price": 5500,
       "src": "img/catalog/small/blazer.jpg"
     }
-  ],
-  "cart": []
-}
+]
