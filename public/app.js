@@ -2,14 +2,33 @@ window.onload = () => {
     const API_URL = 'http://localhost:3000';
     
     Vue.component('search-products', {
-        props: ['value','isfilter','filteritems','clearfilter'],
+        props: [],
         template:`
         <div class="container">
-            <input type="text" class="searchQuery" placeholder="Введите строку для поиска" :value="value" @input="$emit('input', $event.target.value)">
-            <button class="buy btnSearch" @click="filteritems">Поиск</button>
-            <button class="buy btnSearch" v-if="isfilter" @click="clearfilter">Очистить фильтр</button>
+            <input type="text" class="searchQuery" placeholder="Введите строку для поиска" v-model="searchQuery">
+            <button class="buy btnSearch" @click="handleSearchClick">Поиск</button>
+            <button class="buy btnSearch" v-if="isFilter" @click="handleClearSearchClick">Очистить фильтр</button>
         </div>
-        `
+        `,
+        data() {
+            return {
+                searchQuery: ''
+            }
+        },
+        computed: {
+            isFilter() {
+                return this.searchQuery.length;
+            },
+        },
+        methods: {
+            handleClearSearchClick() {
+                this.searchQuery = '';
+                this.$emit('onsearch', this.searchQuery);
+            },
+            handleSearchClick() {
+                this.$emit('onsearch', this.searchQuery);
+            }
+        }
     });
     
     Vue.component('product-item', {
@@ -36,18 +55,18 @@ window.onload = () => {
     });
     
     Vue.component('products', {
-        props: ['searchquery'],
-        data() {
-            return {
-                items: []
-            }
-        },
+        props: ['query'],
         template: `
         <div class="catalog">
             <product-item class="poster" @onbuy="handleBuyClick" v-for="item in renderItems" :item="item"></product-item>
             <h3 v-if="!isFilterNull">По вашему запросу ничего не найдено</h3>
         </div>
         `,
+        data() {
+            return {
+                items: []
+            }
+        },
         mounted() {
             fetch(`${API_URL}/products`)
                 .then((response) => response.json())
@@ -57,11 +76,11 @@ window.onload = () => {
         },
         computed: {
             renderItems() {
-                const regexp = new RegExp(this.searchquery, 'i');
+                const regexp = new RegExp(this.query, 'i');
                 return this.items.filter((item) => regexp.test(item.title));
             },
             isFilterNull() {
-                const regexp = new RegExp(this.searchquery, 'i');
+                const regexp = new RegExp(this.query, 'i');
                 return this.items.filter((item) => regexp.test(item.title)).length;
             },
         },
@@ -121,17 +140,12 @@ window.onload = () => {
     const app = new Vue({
         el: '#app',
         data: {
-            search: '',
             searchQuery: '',
             cart: [],
         },
         methods: {
-            filterItems() {
-                this.searchQuery = this.search;
-            },
-            clearFilter() {
-                this.search = '';
-                this.searchQuery = '';
+            handleSearch(query) {
+                this.searchQuery = query;
             },
             handleBuyClick(item) {
                 const cartItem = this.cart.find(cartItem => cartItem.id === item.id);                
@@ -195,9 +209,6 @@ window.onload = () => {
                 });
         },
         computed: {
-            isFilter() {
-                return this.search.length;
-            },
             renderCart() {
                 return this.cart;
             },

@@ -11,12 +11,12 @@
 <body>
     <div id="app">
         <header class="header">
-            <search-products v-model="search" :isfilter="isFilter" :filteritems="filterItems" :clearfilter="clearFilter"></search-products>
+            <search-products @onsearch="handleSearch"></search-products>
         </header>
         <div class="container main">
-            <products @onbuy="handleBuyClick" :searchquery="searchQuery"></products>
+            <products @onbuy="handleBuyClick" :query="searchQuery"></products>
             <cart @ondel="handleDelClick" :items="renderCart" :isvisiblecart="isVisibleCart" :totalcart="totalCart"></cart>
-        </div>
+        </div> 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
 </body>
