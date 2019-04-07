@@ -20,7 +20,7 @@
         </header>
         <div class="container main">
             <products class="catalog" @onbuy="handleBuyClick" :query="searchQuery"></products>
-            <cart class="cart" @ondel="handleDelClick" :cart="cart"></cart>
+            <cart class="cart" @ondel="handleDelClick" :cart="cart" :total="total"></cart>
         </div> 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>

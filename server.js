@@ -26,7 +26,11 @@ app.get('/cart', (req, res) => {
             res.send('Произошла ошибка');
         }
         
-        res.send(data);
+        const cart = JSON.parse(data);
+        res.send({
+            items: cart,
+            total: cart.reduce((sum, item) => sum + item.price*item.quantity, 0),
+        });
     });
 });
 
@@ -41,7 +45,10 @@ app.post('/cart', (req, res) => {
         cart.push(req.body);
         
         fs.writeFile('./db/cart.json', JSON.stringify(cart), () => {
-            res.send(req.body);
+            res.send({
+                item: req.body,
+                total: cart.reduce((sum, item) => sum + item.price*item.quantity, 0),
+            });
         });
     });
 });
@@ -62,7 +69,10 @@ app.patch('/cart/:id', (req, res) => {
         });
         
         fs.writeFile('./db/cart.json', JSON.stringify(cart), () => {
-            res.send(cart.find((item) => +item.id === +req.params.id));
+            res.send({
+                item: cart.find((item) => +item.id === +req.params.id),
+                total: cart.reduce((sum, item) => sum + item.price*item.quantity, 0), 
+            });
         });
     });
 });
@@ -79,7 +89,9 @@ app.delete('/cart/:id', (req, res) => {
         cart.splice(itemIdx, 1);
     
         fs.writeFile('./db/cart.json', JSON.stringify(cart), () => {
-            res.send(cart.find((item) => +item.id === +req.params.id));
+            res.send({
+                total: cart.reduce((sum, item) => sum + item.price*item.quantity, 0), 
+            });
         });
     });
 });

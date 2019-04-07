@@ -102,7 +102,7 @@ window.onload = () => {
     });
     
     Vue.component('cart', {
-        props: ['cart'],
+        props: ['cart','total'],
         template:`
         <div>
             <table cellspacing="0" class="cartProduct" v-if="cart.length">
@@ -115,15 +115,10 @@ window.onload = () => {
                 </tr>
                 <cart-item class="bodyCart" @ondel="handleDelClick" v-for="item in cart" :item="item"></cart-item>
             </table>
-            <div class="totalCart" v-if="cart.length">Общая сумма корзины: {{ totalCart }}</div>
+            <div class="totalCart" v-if="cart.length">Общая сумма корзины: {{ total }}</div>
             <h3 v-if="!cart.length">Корзина пуста</h3>
         </div>
         `,
-        computed: {
-            totalCart() {
-                return this.cart.reduce((sum, item) => sum + item.price*item.quantity, 0);
-            },
-        },
         methods: {
             handleDelClick(item) {
                 this.$emit('ondel', item);
@@ -136,13 +131,15 @@ window.onload = () => {
         data: {
             searchQuery: '',
             cart: [],
+            total: 0,
             display: 'none',
         },
         mounted() {
             fetch(`${API_URL}/cart`)
                 .then((response) => response.json())
-                .then((items) => {
-                    this.cart = items;
+                .then((result) => {
+                    this.cart = result.items;
+                    this.total = result.total;
                     this.display = 'block';
                 });
         },
@@ -159,9 +156,10 @@ window.onload = () => {
                         body: JSON.stringify({quantity: cartItem.quantity + 1})   
                     })
                         .then((response) => response.json())
-                        .then((updated) => {
+                        .then((result) => {
                             const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
-                            Vue.set(this.cart, itemIdx, updated);
+                            Vue.set(this.cart, itemIdx, result.item);
+                            this.total = result.total;
                         }
                     );
                 } else {
@@ -171,8 +169,9 @@ window.onload = () => {
                         body: JSON.stringify({...item, quantity: 1})
                     })
                         .then((response) => response.json())
-                        .then((created) => {
-                            this.cart.push(created); 
+                        .then((result) => {
+                            this.cart.push(result.item);
+                            this.total = result.total;
                         }
                     );
                 }
@@ -185,18 +184,21 @@ window.onload = () => {
                         body: JSON.stringify({quantity: item.quantity - 1})   
                     })
                         .then((response) => response.json())
-                        .then((updated) => {
+                        .then((result) => {
                             const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
-                            Vue.set(this.cart, itemIdx, updated);
+                            Vue.set(this.cart, itemIdx, result.item);
+                            this.total = result.total;
                     });
                 } else {
                     if (confirm('Удалить из корзины товар ' + item.title.toUpperCase() + '?'))
                         fetch(`${API_URL}/cart/${item.id}`,{
                             method: 'DELETE',
                         })
-                            .then(() => {
-                                const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
+                            .then((response) => response.json())
+                            .then((result) => {
+                                const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
                                 this.cart.splice(itemIdx, 1);
+                                this.total = result.total;
                             }
                         );
                 }
