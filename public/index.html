@@ -15,7 +15,7 @@
         </header>
         <div class="container main">
             <products @onbuy="handleBuyClick" :query="searchQuery"></products>
-            <cart @ondel="handleDelClick" :items="renderCart" :isvisiblecart="isVisibleCart" :totalcart="totalCart"></cart>
+            <cart @ondel="handleDelClick" :cart="cart"></cart>
         </div> 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
