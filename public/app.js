@@ -36,13 +36,35 @@ window.onload = () => {
     });
     
     Vue.component('products', {
-        props: ['items','isfilternull'],
+        props: ['searchquery'],
+        data() {
+            return {
+                items: []
+            }
+        },
         template: `
         <div class="catalog">
-            <product-item class="poster" @onbuy="handleBuyClick" v-for="item in items" :item="item"></product-item>
-            <h3 v-if="!isfilternull">По вашему запросу ничего не найдено</h3>
+            <product-item class="poster" @onbuy="handleBuyClick" v-for="item in renderItems" :item="item"></product-item>
+            <h3 v-if="!isFilterNull">По вашему запросу ничего не найдено</h3>
         </div>
         `,
+        mounted() {
+            fetch(`${API_URL}/products`)
+                .then((response) => response.json())
+                .then((items) => {
+                    this.items = items;
+                });
+        },
+        computed: {
+            renderItems() {
+                const regexp = new RegExp(this.searchquery, 'i');
+                return this.items.filter((item) => regexp.test(item.title));
+            },
+            isFilterNull() {
+                const regexp = new RegExp(this.searchquery, 'i');
+                return this.items.filter((item) => regexp.test(item.title)).length;
+            },
+        },
         methods: {
             handleBuyClick(item) {
                 this.$emit('onbuy', item);
@@ -99,11 +121,9 @@ window.onload = () => {
     const app = new Vue({
         el: '#app',
         data: {
-            items: [],
             search: '',
             searchQuery: '',
             cart: [],
-            display: 'none',
         },
         methods: {
             filterItems() {
@@ -168,12 +188,6 @@ window.onload = () => {
             }
         },
         mounted() {
-            fetch(`${API_URL}/products`)
-                .then((response) => response.json())
-                .then((items) => {
-                    this.items = items;
-                    this.display = 'block';
-                });
             fetch(`${API_URL}/cart`)
                 .then((response) => response.json())
                 .then((items) => {
@@ -181,14 +195,6 @@ window.onload = () => {
                 });
         },
         computed: {
-            renderItems() {
-                const regexp = new RegExp(this.searchQuery, 'i');
-                return this.items.filter((item) => regexp.test(item.title));
-            },
-            isFilterNull() {
-                const regexp = new RegExp(this.searchQuery, 'i');
-                return this.items.filter((item) => regexp.test(item.title)).length;
-            },
             isFilter() {
                 return this.search.length;
             },
