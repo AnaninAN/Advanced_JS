@@ -3,21 +3,16 @@ window.onload = () => {
     
     Vue.component('search-products', {
         template:`
-        <div class="container">
+        <div>
             <input type="text" class="searchQuery" placeholder="Введите строку для поиска" v-model="searchQuery">
             <button class="buy btnSearch" @click="handleSearchClick">Поиск</button>
-            <button class="buy btnSearch" v-if="isFilter" @click="handleClearSearchClick">Очистить фильтр</button>
+            <button class="buy btnSearch" v-if="searchQuery.length" @click="handleClearSearchClick">Очистить фильтр</button>
         </div>
         `,
         data() {
             return {
                 searchQuery: '',
             }
-        },
-        computed: {
-            isFilter() {
-                return this.searchQuery.length;
-            },
         },
         methods: {
             handleClearSearchClick() {
@@ -56,9 +51,9 @@ window.onload = () => {
     Vue.component('products', {
         props: ['query'],
         template: `
-        <div class="catalog">
+        <div>
             <product-item class="poster" @onbuy="handleBuyClick" v-for="item in renderItems" :item="item"></product-item>
-            <h3 v-if="!isFilterNull">По вашему запросу ничего не найдено</h3>
+            <h3 v-if="!renderItems.length">По вашему запросу ничего не найдено</h3>
         </div>
         `,
         data() {
@@ -77,10 +72,6 @@ window.onload = () => {
             renderItems() {
                 const regexp = new RegExp(this.query, 'i');
                 return this.items.filter((item) => regexp.test(item.title));
-            },
-            isFilterNull() {
-                const regexp = new RegExp(this.query, 'i');
-                return this.items.filter((item) => regexp.test(item.title)).length;
             },
         },
         methods: {
@@ -113,9 +104,8 @@ window.onload = () => {
     Vue.component('cart', {
         props: ['cart'],
         template:`
-        <div class="cart">
-            <h2>Корзина</h2>
-            <table cellspacing="0" class="cartProduct" v-if="isVisibleCart">
+        <div>
+            <table cellspacing="0" class="cartProduct" v-if="cart.length">
                 <tr class="headerCart">
                     <th>product</th>
                     <th>price</th>
@@ -125,14 +115,11 @@ window.onload = () => {
                 </tr>
                 <cart-item class="bodyCart" @ondel="handleDelClick" v-for="item in cart" :item="item"></cart-item>
             </table>
-            <div class="totalCart" v-if="isVisibleCart">Общая сумма корзины: {{ totalCart }}</div>
-            <h3 v-if="!isVisibleCart">Корзина пуста</h3>
+            <div class="totalCart" v-if="cart.length">Общая сумма корзины: {{ totalCart }}</div>
+            <h3 v-if="!cart.length">Корзина пуста</h3>
         </div>
         `,
         computed: {
-            isVisibleCart() {
-                return this.cart.length;
-            },
             totalCart() {
                 return this.cart.reduce((sum, item) => sum + item.price*item.quantity, 0);
             },
