@@ -12,10 +12,16 @@ a {
 }
 .header {
   padding: 15px 0;
+  display: flex;
+  justify-content: space-between;
 }
 .container {
   max-width: 1200px;
   margin: 0 auto;
+}
+.headerCart {
+  width: 600px;
+  border-bottom: 1px solid orangered;
 }
 .main {
   display: flex;
@@ -107,13 +113,12 @@ a {
   color: orangered;
   transition: .3s;
 }
-.cart h2 {
-  margin-bottom: 10px;
+h2 {
+  font-size: 20px;
   text-align: center;
   text-transform: uppercase;
 }
 h3 {
-  margin-top: 10px;
   text-align: center;
   color: orangered;
 }
