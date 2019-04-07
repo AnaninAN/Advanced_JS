@@ -112,11 +112,11 @@ window.onload = () => {
     });
     
     Vue.component('cart', {
-        props: ['items','isvisiblecart','totalcart'],
+        props: ['cart'],
         template:`
         <div class="cart">
             <h2>Корзина</h2>
-            <table cellspacing="0" class="cartProduct" v-if="isvisiblecart">
+            <table cellspacing="0" class="cartProduct" v-if="isVisibleCart">
                 <tr class="headerCart">
                     <th>product</th>
                     <th>price</th>
@@ -124,12 +124,20 @@ window.onload = () => {
                     <th>total</th>
                     <th>action</th>
                 </tr>
-                <cart-item class="bodyCart" @ondel="handleDelClick" v-for="item in items" :item="item"></cart-item>
+                <cart-item class="bodyCart" @ondel="handleDelClick" v-for="item in cart" :item="item"></cart-item>
             </table>
-            <div class="totalCart" v-if="isvisiblecart">Общая сумма корзины: {{ totalcart }}</div>
-            <h3 v-if="!isvisiblecart">Корзина пуста</h3>
+            <div class="totalCart" v-if="isVisibleCart">Общая сумма корзины: {{ totalCart }}</div>
+            <h3 v-if="!isVisibleCart">Корзина пуста</h3>
         </div>
         `,
+        computed: {
+            isVisibleCart() {
+                return this.cart.length;
+            },
+            totalCart() {
+                return this.cart.reduce((sum, item) => sum + item.price*item.quantity, 0);
+            }  
+        },
         methods: {
             handleDelClick(item) {
                 this.$emit('ondel', item);
@@ -142,6 +150,13 @@ window.onload = () => {
         data: {
             searchQuery: '',
             cart: [],
+        },
+        mounted() {
+            fetch(`${API_URL}/cart`)
+                .then((response) => response.json())
+                .then((items) => {
+                    this.cart = items;
+                });
         },
         methods: {
             handleSearch(query) {
@@ -158,7 +173,6 @@ window.onload = () => {
                         .then((response) => response.json())
                         .then((updated) => {
                             const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
-                            console.log(this.search);
                             Vue.set(this.cart, itemIdx, updated);
                         }
                     );
@@ -185,7 +199,6 @@ window.onload = () => {
                         .then((response) => response.json())
                         .then((updated) => {
                             const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
-                            console.log(this.search);
                             Vue.set(this.cart, itemIdx, updated);
                     });
                 } else {
@@ -199,24 +212,6 @@ window.onload = () => {
                             }
                         );
                 }
-            }
-        },
-        mounted() {
-            fetch(`${API_URL}/cart`)
-                .then((response) => response.json())
-                .then((items) => {
-                    this.cart = items;
-                });
-        },
-        computed: {
-            renderCart() {
-                return this.cart;
-            },
-            isVisibleCart() {
-                return this.cart.length;
-            },
-            totalCart() {
-                return this.cart.reduce((sum, item) => sum + item.price*item.quantity, 0);
             }
         }
     });
