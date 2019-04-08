@@ -6,7 +6,7 @@ const fs = require('fs');
 const prodRouter = require('./routes/product');
 const cartRouter = require('./routes/cart');
 
-mongoose.connect(config.mongoURI)
+    mongoose.connect(config.mongoURI)
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.error(err));
 

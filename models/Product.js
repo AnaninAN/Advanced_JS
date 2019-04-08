@@ -14,6 +14,6 @@ const prodSchema = new Schema({
         type: String,
         required: true
     }
-});
+}, { collection : 'products' });
 
 module.exports = mongoose.model('products', prodSchema);

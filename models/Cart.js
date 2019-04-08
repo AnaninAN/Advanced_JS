@@ -18,6 +18,6 @@ const cartSchema = new Schema({
         type: Number,
         required: true
     }
-});
+}, { collection : 'cart' });
 
 module.exports = mongoose.model('cart', cartSchema);
