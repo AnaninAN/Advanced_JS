@@ -1,12 +1,23 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const config = require('./config');
 const fs = require('fs');
 
-const port = 3000;
+const port = process.env.PORT || config.port;
 const app = express();
 
 app.use(express.static('./public'));
 app.use(bodyParser.json());
+
+mongoose.connect(config.mongoURI, {
+    reconnectTries: 100,
+    reconnectInterval: 500,
+    autoReconnect: true,
+    useNewUrlParser: true
+})
+    .then(() => console.log('MongoDB connected'))
+    .catch((err) => console.error(err));
 
 app.get('/products', (req, res) => {
     fs.readFile('./db/products.json', 'utf-8', (err, data) => {
@@ -99,5 +110,5 @@ app.delete('/cart/:id', (req, res) => {
 
 
 app.listen(port, () => {
-    console.log('Server has been started');
+    console.log(`Server has been started on port ${config.port}`);
 });
