@@ -1,20 +1,6 @@
 window.onload = () => {
     const API_URL = 'http://localhost:3000';
     
-    class ProdApi {
-        static fetch(bd) {
-            return fetch(`${API_URL}/${bd}`).then((response) => response.json());
-        };
-        
-        static create(bd, body) {
-            return fetch(`${API_URL}/${bd}`,{
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            }).then((response) => response.json()); 
-        };
-    };
-    
     Vue.component('search-products', {
         template:`
         <div>
@@ -76,7 +62,11 @@ window.onload = () => {
             }
         },
         mounted() {
-            ProdApi.fetch('products').then((items) => this.items = items);
+            fetch(`${API_URL}/products`)
+                .then((response) => response.json())
+                .then((items) => {
+                    this.items = items;
+                });
         },
         computed: {
             renderItems() {
@@ -142,14 +132,14 @@ window.onload = () => {
             searchQuery: '',
             cart: [],
             total: 0,
-            display: 'none',
+            display: 'block',
         },
         mounted() {
-            ProdApi.fetch('cart')
+            fetch(`${API_URL}/cart`)
+                .then((response) => response.json())
                 .then((result) => {
                     this.cart = result.items;
                     this.total = result.total;
-                    this.display = 'block';
                 });
         },
         methods: {
@@ -172,10 +162,15 @@ window.onload = () => {
                         }
                     );
                 } else {
-                    ProdApi.create('cart', {...item, quantity: 1})
+                    fetch(`${API_URL}/cart`,{
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({...item, quantity: 1})
+                    })  
+                        .then((response) => response.json())
                         .then((result) => {
                             this.cart.push(result.item);
-                            //this.total = result.total;
+                            this.total = result.total;
                         });
                 }
             },

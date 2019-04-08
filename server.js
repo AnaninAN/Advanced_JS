@@ -13,13 +13,12 @@ mongoose.connect(config.mongoURI)
 const port = process.env.PORT || config.port;
 
 const app = express();
-
-app.use('/products', prodRouter);
-//app.use('/cart', cartRouter);
 app.use(express.static('./public'));
 app.use(bodyParser.json());
+app.use('/products', prodRouter);
+app.use('/cart', cartRouter);
 
-
+/*
 app.get('/products', (req, res) => {
     fs.readFile('./db/products.json', 'utf-8', (err, data) => {
         if(err) {
@@ -108,7 +107,7 @@ app.delete('/cart/:id', (req, res) => {
     });
 });
 
-
+*/
 
 app.listen(port, () => {
     console.log(`Server has been started on port ${config.port}`);

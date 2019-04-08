@@ -1,30 +1,23 @@
 const express = require('express');
-const router = express.Router();
+const routerCart = express.Router();
 const Cart = require('../models/Cart');
 
-router.get('/', async (req, res) => {
+routerCart.get('/', async (req, res) => {
     
-    const cart = await Cart.find({});
-    res.status(200).json(cart);
-});
+    const cartItems = await Cart.find({});
 
-router.post('/', async (req, res) => {
-    
-    const cartData = {
-        title: req.body.title,
-        price: req.body.price,
-        src: req.body.src,
-        quantity: req.body.quantity
-    };
-    
-    const cart = new Cart(cartData);
-    await cart.save();
-    
-    res.status(201).json(cart);
+    res.status(200).send({
+        items: cartItems,
+        total: cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+    });
 });
-
-router.delete('/', async (req, res) => {
+/*
+routerCart.post('/', async (req, res) => {
     
 });
 
-module.exports = router
+routerCart.delete('/', async (req, res) => {
+    
+});
+*/
+module.exports = routerCart;
