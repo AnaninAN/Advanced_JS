@@ -1,6 +1,20 @@
 window.onload = () => {
     const API_URL = 'http://localhost:3000';
     
+    class ProdApi {
+        static fetch(bd) {
+            return fetch(`${API_URL}/${bd}`).then((response) => response.json());
+        };
+        
+        static create(bd, body) {
+            return fetch(`${API_URL}/${bd}`,{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            }).then((response) => response.json()); 
+        };
+    };
+    
     Vue.component('search-products', {
         template:`
         <div>
@@ -62,11 +76,7 @@ window.onload = () => {
             }
         },
         mounted() {
-            fetch(`${API_URL}/products`)
-                .then((response) => response.json())
-                .then((items) => {
-                    this.items = items;
-                });
+            ProdApi.fetch('products').then((items) => this.items = items);
         },
         computed: {
             renderItems() {
@@ -135,8 +145,7 @@ window.onload = () => {
             display: 'none',
         },
         mounted() {
-            fetch(`${API_URL}/cart`)
-                .then((response) => response.json())
+            ProdApi.fetch('cart')
                 .then((result) => {
                     this.cart = result.items;
                     this.total = result.total;
@@ -148,7 +157,7 @@ window.onload = () => {
                 this.searchQuery = query;
             },
             handleBuyClick(item) {
-                const cartItem = this.cart.find(cartItem => cartItem.id === item.id);                
+                const cartItem = this.cart.find((cartItem) => cartItem.id === item.id);                
                 if(cartItem) {
                     fetch(`${API_URL}/cart/${item.id}`,{
                         method: 'PATCH',
@@ -163,17 +172,11 @@ window.onload = () => {
                         }
                     );
                 } else {
-                    fetch(`${API_URL}/cart`,{
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({...item, quantity: 1})
-                    })
-                        .then((response) => response.json())
+                    ProdApi.create('cart', {...item, quantity: 1})
                         .then((result) => {
                             this.cart.push(result.item);
-                            this.total = result.total;
-                        }
-                    );
+                            //this.total = result.total;
+                        });
                 }
             },
             handleDelClick(item) {
