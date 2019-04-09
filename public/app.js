@@ -147,16 +147,17 @@ window.onload = () => {
                 this.searchQuery = query;
             },
             handleBuyClick(item) {
-                const cartItem = this.cart.find((cartItem) => cartItem.id === item._id);                
+                const cartItem = this.cart.find((cartItem) => cartItem.id === item.id);                
                 if(cartItem) {
-                    fetch(`${API_URL}/cart/${item._id}`,{
+                    console.log('patch');
+                    fetch(`${API_URL}/cart/${item.id}`,{
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({quantity: cartItem.quantity + 1})   
                     })
                         .then((response) => response.json())
                         .then((result) => {
-                            const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item._id);
+                            const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
                             Vue.set(this.cart, itemIdx, result.item);
                             this.total = result.total;
                         }
@@ -168,35 +169,33 @@ window.onload = () => {
                         body: JSON.stringify({...item, quantity: 1})
                     })  
                         .then((response) => response.json())
-                        .then((item) => {
-                            this.cart.push(item);
-                            console.log(this.cart);
-                            //this.total = result.total;
+                        .then((result) => {
+                            this.cart.push(result.item);
+                            this.total = result.total;
                         });
                 }
             },
             handleDelClick(item) {
-                console.log(item);
                 if(item.quantity > 1) {
-                    fetch(`${API_URL}/cart/${item._id}`,{
+                    fetch(`${API_URL}/cart/${item.id}`,{
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({quantity: item.quantity - 1})   
                     })
                         .then((response) => response.json())
                         .then((result) => {
-                            const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item._id);
+                            const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
                             Vue.set(this.cart, itemIdx, result.item);
                             this.total = result.total;
                     });
                 } else {
                     if (confirm('Удалить из корзины товар ' + item.title.toUpperCase() + '?'))
-                        fetch(`${API_URL}/cart/${item._id}`,{
+                        fetch(`${API_URL}/cart/${item.id}`,{
                             method: 'DELETE',
                         })
                             .then((response) => response.json())
                             .then((result) => {
-                                const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item._id);
+                                const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
                                 this.cart.splice(itemIdx, 1);
                                 this.total = result.total;
                             }
