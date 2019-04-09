@@ -149,7 +149,6 @@ window.onload = () => {
             handleBuyClick(item) {
                 const cartItem = this.cart.find((cartItem) => cartItem.id === item.id);                
                 if(cartItem) {
-                    console.log('patch');
                     fetch(`${API_URL}/cart/${item.id}`,{
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },

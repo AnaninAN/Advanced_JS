@@ -18,6 +18,7 @@ const prodSchema = new Schema({
         type: String,
         required: true
     }
-}, { collection : 'products' });
+}, 
+{ collection : 'products' });
 
 module.exports = mongoose.model('products', prodSchema);
