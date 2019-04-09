@@ -1,6 +1,37 @@
 window.onload = () => {
     const API_URL = 'http://localhost:3000';
     
+    class ProdApi {
+        static fetch(db) {
+            return fetch(`${API_URL}/${db}`).then((response) => response.json());
+        };
+        
+        static create(db, body) {
+            return fetch(`${API_URL}/${db}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            })  
+                .then((response) => response.json());
+        };
+        
+        static change(db_id, body) {
+            return fetch(`${API_URL}/${db_id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)   
+            })
+                .then((response) => response.json());
+        };
+        
+        static delete(db_id) {
+            return fetch(`${API_URL}/${db_id}`, {
+                method: 'DELETE',
+            })
+                .then((response) => response.json());
+        };
+    };
+    
     Vue.component('search-products', {
         template:`
         <div>
@@ -62,8 +93,7 @@ window.onload = () => {
             }
         },
         mounted() {
-            fetch(`${API_URL}/products`)
-                .then((response) => response.json())
+            ProdApi.fetch('products')
                 .then((items) => {
                     this.items = items;
                 });
@@ -132,14 +162,14 @@ window.onload = () => {
             searchQuery: '',
             cart: [],
             total: 0,
-            display: 'block',
+            display: 'none',
         },
         mounted() {
-            fetch(`${API_URL}/cart`)
-                .then((response) => response.json())
+            ProdApi.fetch('cart')
                 .then((result) => {
                     this.cart = result.items;
                     this.total = result.total;
+                    this.display = 'block';
                 });
         },
         methods: {
@@ -149,25 +179,14 @@ window.onload = () => {
             handleBuyClick(item) {
                 const cartItem = this.cart.find((cartItem) => cartItem.id === item.id);                
                 if(cartItem) {
-                    fetch(`${API_URL}/cart/${item.id}`,{
-                        method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({quantity: cartItem.quantity + 1})   
-                    })
-                        .then((response) => response.json())
+                    ProdApi.change(`cart/${item.id}`, {quantity: cartItem.quantity + 1})    
                         .then((result) => {
                             const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
                             Vue.set(this.cart, itemIdx, result.item);
                             this.total = result.total;
-                        }
-                    );
+                        });
                 } else {
-                    fetch(`${API_URL}/cart`,{
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({...item, quantity: 1})
-                    })  
-                        .then((response) => response.json())
+                    ProdApi.create('cart', {...item, quantity: 1})
                         .then((result) => {
                             this.cart.push(result.item);
                             this.total = result.total;
@@ -176,29 +195,20 @@ window.onload = () => {
             },
             handleDelClick(item) {
                 if(item.quantity > 1) {
-                    fetch(`${API_URL}/cart/${item.id}`,{
-                        method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({quantity: item.quantity - 1})   
-                    })
-                        .then((response) => response.json())
+                    ProdApi.change(`cart/${item.id}`, {quantity: item.quantity - 1})
                         .then((result) => {
                             const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
                             Vue.set(this.cart, itemIdx, result.item);
                             this.total = result.total;
-                    });
+                        });
                 } else {
                     if (confirm('Удалить из корзины товар ' + item.title.toUpperCase() + '?'))
-                        fetch(`${API_URL}/cart/${item.id}`,{
-                            method: 'DELETE',
-                        })
-                            .then((response) => response.json())
+                        ProdApi.delete(`cart/${item.id}`)
                             .then((result) => {
                                 const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
                                 this.cart.splice(itemIdx, 1);
                                 this.total = result.total;
-                            }
-                        );
+                            });
                 }
             },
         }
