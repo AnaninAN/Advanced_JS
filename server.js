@@ -2,15 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const config = require('./config');
-const fs = require('fs');
 const prodRouter = require('./routes/product');
 const cartRouter = require('./routes/cart');
+const port = process.env.PORT || config.port;
 
-    mongoose.connect(config.mongoURI)
+mongoose.connect(config.mongoURI)
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.error(err));
-
-const port = process.env.PORT || config.port;
 
 const app = express();
 app.use(express.static('./public'));

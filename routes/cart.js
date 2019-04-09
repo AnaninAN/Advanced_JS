@@ -33,11 +33,12 @@ routerCart.post('/', async (req, res) => {
 
 routerCart.patch('/:id', async (req, res) => {
     
-    await Cart.findOneAndUpdate({id: req.params.id}, req.body, {new: true}, function(err, item){
+    await Cart.findOneAndUpdate({id: req.params.id}, req.body, {new: true}, async function(err, item) {
         
+        const cart = await Cart.find({});
         res.status(200).send({
             item: item,
-            //total: cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
+            total: cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
         }); 
     });
 });
