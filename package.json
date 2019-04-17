@@ -1,0 +1,30 @@
+{
+    "name": "eshop",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "nodemon server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AnaninAN/Advanced_JS.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/AnaninAN/Advanced_JS/issues"
+    },
+    "homepage": "https://github.com/AnaninAN/Advanced_JS#readme",
+    "dependencies": {
+        "body-parser": "^1.18.3",
+        "express": "^4.16.4",
+        "mongoose": "^5.4.22",
+        "vue": "^2.6.10"
+    },
+    "devDependencies": {
+        "nodemon": "^1.18.10",
+        "webpack": "^4.29.6"
+    }
+}

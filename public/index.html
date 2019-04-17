@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="img/favicon.png" type="image/png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/bootstrap_skin.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/media.css">
+    <script src="app.js"></script>
+    <title>Brand</title>
+</head>
+
+<body>
+    <div id="app" :style="{ display:display }">
+        <header class="header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-xl-2 col-md-3">
+                        <a href="#" class="logo">
+                            <img src="img/logo.png" alt="Brand" class="logo__img">
+                            BRAN<span>D</span>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <div class="basket">
+                            <a href="#">
+                                <img src="img/basket.png" alt="Basket" class="basket__img">
+                            </a>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle basket__btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My&nbsp;Account</button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">...</a>
+                                    <a class="dropdown-item" href="#">...</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <section class="container shop">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-xl-4 col-sm-6 searchBlock">
+                            <h3>Search</h3>
+                            <form class="input-group search">
+                            <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Search for Item...">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fas fa-search"></i></button>
+                            </div>
+                        </form>
+                        </div>
+                        <div class="col-xl-4 col-sm-6 size">
+                            <h3>Size</h3>
+                            <div class="row">
+                                <div class="col-3 d-flex align-items-center size__item">
+                                    <input type="checkbox" id="size__item1">
+                                    <label for="size__item1">XXS</label>
+                                </div>
+                                <div class="col-3 d-flex align-items-center size__item">
+                                    <input type="checkbox" id="size__item2">
+                                    <label for="size__item2">XS</label>
+                                </div>
+                                <div class="col-3 d-flex align-items-center size__item">
+                                    <input type="checkbox" id="size__item3">
+                                    <label for="size__item3">S</label>
+                                </div>
+                                <div class="col-3 d-flex align-items-center size__item">
+                                    <input type="checkbox" id="size__item4">
+                                    <label for="size__item4">M</label>
+                                </div>
+                                <div class="col-3 d-flex align-items-center size__item">
+                                    <input type="checkbox" id="size__item5">
+                                    <label for="size__item5">L</label>
+                                </div>
+                                <div class="col-3 d-flex align-items-center size__item">
+                                    <input type="checkbox" id="size__item6">
+                                    <label for="size__item6">XL</label>
+                                </div>
+                                <div class="col-3 d-flex align-items-center size__item">
+                                    <input type="checkbox" id="size__item7">
+                                    <label for="size__item7">XXL</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-sm-6 price">
+                            <h3>Price</h3>
+                            <div class="price__line">
+                                <div class="line__activ"></div>
+                                <div class="line__circle circle__pos1"></div>
+                                <div class="line__circle circle__pos2"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 price__value">$52</div>
+                                <div class="col-6 price__value">$400</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Products -->
+                    <products class="row" @onbuy="handleBuyClick" :query="searchQuery"></products>
+                    <!---->
+                </div>
+            </div>
+        </section>
+        <section class="advantages">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 advantages__item">
+                        <img src="img/free_delivery.png" alt="Free Delivery">
+                        <h3>Free Delivery</h3>
+                        <p>Worldwide delivery on all. Authorit tively morph next-generation innov tion with extensive models.</p>
+                    </div>
+                    <div class="col-md-4 advantages__item">
+                        <img src="img/sales_discounts.png" alt="Free Delivery">
+                        <h3>Sales & discounts</h3>
+                        <p>Worldwide delivery on all. Authorit tively morph next-generation innov tion with extensive models.</p>
+                    </div>
+                    <div class="col-md-4 advantages__item">
+                        <img src="img/quality_assurance.png" alt="Free Delivery">
+                        <h3>Quality assurance</h3>
+                        <p>Worldwide delivery on all. Authorit tively morph next-generation innov tion with extensive models.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="subscribe">
+            <div class="container">
+                <div class="row subscribeBlock">
+                    <div class="col-md-6 subscribe__reviews">
+                        <div class="reviews">
+                            <div class="reviews__img">
+                                <img src="img/icon_feedback.png" alt="">
+                            </div>
+                            <div class="reviews__text">
+                                &laquo;Vestibulum quis porttitor dui! Quisque viverra nunc&nbsp;mi, a&nbsp;pulvinar purus condimentum&nbsp;a. Aliquam condimentum mattis neque sed pretium&raquo;
+                                <div class="reviews__text__author">Bin Burhan</div>
+                                <div class="reviews__text__address">Dhaka, Bd</div>
+                                <div class="reviews__slider">
+                                    <div class="slider__form"></div>
+                                    <div class="slider__form"></div>
+                                    <div class="slider__form"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-center align-items-center">
+                        <div class="subscribe__email">
+                            <div class="subscribe__title">SUBSCRIBE</div>
+                            <div class="subscribe__text">FOR OUR NEWLETTER AND PROMOTION</div>
+                            <form action="" class="input__block">
+                                <input type="text" placeholder="Enter Your Email">
+                                <button>Subscribe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="footer__top__brand">
+                            <a href="#" class="logo top__brand">
+                                <img src="img/logo.png" alt="Brand" class="logo__img">
+                                BRAN<span>D</span>
+                            </a>
+                            <p>Objectively transition extensive data rather than cross functional solutions. Monotonectally syndicate multidisciplinary materials before go&nbsp;forward benefits. Intrinsicly syndicate an&nbsp;expanded array of&nbsp;processes and cross-unit partnerships.</p>
+                            <p>Efficiently plagiarize 24/365 action items and focused infomediaries. Distinctively seize superior initiatives for wireless technologies. Dynamically optimize.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="footer__top">
+                            <h5>COMPANY</h5>
+                            <p><a href="#">Home</a></p>
+                            <p><a href="#">Shop</a></p>
+                            <p><a href="#">About</a></p>
+                            <p><a href="#">How It&nbsp;Works</a></p>
+                            <p><a href="#">Contact</a></p>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 d-flex justify-content-lg-end">
+                        <div class="footer__top">
+                            <h5>INFORMATION</h5> 
+                            <p><a href="#">Tearms&amp;Condition</a></p>
+                            <p><a href="#">Privacy&nbsp;Policy</a></p>
+                            <p><a href="#">How&nbsp;to&nbsp;Buy</a></p>
+                            <p><a href="#">How to&nbsp;Sell</a></p>
+                            <p><a href="#">Promotion</a></p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 d-flex justify-content-lg-end">
+                        <div class="footer__top">
+                            <h5>SHOP CATEGORY</h5>
+                            <p><a href="#">Men</a></p>
+                            <p><a href="#">Women</a></p>
+                            <p><a href="#">Child</a></p>
+                            <p><a href="#">Apparel</a></p>
+                            <p><a href="#">Brows All</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+</body>
+
+</html>
