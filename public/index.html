@@ -26,16 +26,21 @@
                             BRAN<span>D</span>
                         </a>
                     </div>
+                    <div class="col-md-5 col-sm-7">
+                        <search-products @onsearch="handleSearch"></search-products>
+                    </div>
                     <div class="col">
                         <div class="basket">
                             <a href="#">
                                 <img src="img/basket.png" alt="Basket" class="basket__img">
+                                <span class="badge badge-pill badge-danger countProducts">{{ countProducts }}</span>
                             </a>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-primary dropdown-toggle basket__btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My&nbsp;Account</button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">...</a>
-                                    <a class="dropdown-item" href="#">...</a>
+                                <button type="button" class="btn btn-primary dropdown-toggle basket__btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cart</button>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" @click.stop>
+                                    <div class="dropdown-item">
+                                        <cart class="cart" @ondel="handleDelClick" :cart="cart" :total="total"></cart>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -46,65 +51,8 @@
         <section class="container shop">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-xl-4 col-sm-6 searchBlock">
-                            <h3>Search</h3>
-                            <form class="input-group search">
-                            <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Search for Item...">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fas fa-search"></i></button>
-                            </div>
-                        </form>
-                        </div>
-                        <div class="col-xl-4 col-sm-6 size">
-                            <h3>Size</h3>
-                            <div class="row">
-                                <div class="col-3 d-flex align-items-center size__item">
-                                    <input type="checkbox" id="size__item1">
-                                    <label for="size__item1">XXS</label>
-                                </div>
-                                <div class="col-3 d-flex align-items-center size__item">
-                                    <input type="checkbox" id="size__item2">
-                                    <label for="size__item2">XS</label>
-                                </div>
-                                <div class="col-3 d-flex align-items-center size__item">
-                                    <input type="checkbox" id="size__item3">
-                                    <label for="size__item3">S</label>
-                                </div>
-                                <div class="col-3 d-flex align-items-center size__item">
-                                    <input type="checkbox" id="size__item4">
-                                    <label for="size__item4">M</label>
-                                </div>
-                                <div class="col-3 d-flex align-items-center size__item">
-                                    <input type="checkbox" id="size__item5">
-                                    <label for="size__item5">L</label>
-                                </div>
-                                <div class="col-3 d-flex align-items-center size__item">
-                                    <input type="checkbox" id="size__item6">
-                                    <label for="size__item6">XL</label>
-                                </div>
-                                <div class="col-3 d-flex align-items-center size__item">
-                                    <input type="checkbox" id="size__item7">
-                                    <label for="size__item7">XXL</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-sm-6 price">
-                            <h3>Price</h3>
-                            <div class="price__line">
-                                <div class="line__activ"></div>
-                                <div class="line__circle circle__pos1"></div>
-                                <div class="line__circle circle__pos2"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6 price__value">$52</div>
-                                <div class="col-6 price__value">$400</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Products -->
-                    <products class="row" @onbuy="handleBuyClick" :query="searchQuery"></products>
-                    <!---->
+                    <!--<filter-products class="row filterProducts"></filter-products>-->
+                    <products class="row productsList" @onbuy="handleBuyClick" :query="searchQuery" :display="display"></products>
                 </div>
             </div>
         </section>

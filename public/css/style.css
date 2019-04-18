@@ -38,15 +38,57 @@ a:hover {
   justify-content: flex-end;
   align-items: flex-end;
 }
+.basket a {
+  position: relative;
+}
 .basket .basket__img {
   margin-right: 25px;
+}
+.basket .countProducts {
+  position: absolute;
+  left: 20px;
+  top: -10px;
 }
 .basket .basket__btn {
   width: 130px;
   height: 38px;
 }
-.shop {
+.cartProduct {
+  width: 100%;
+}
+.bodyCart__img img {
+  height: 60px;
+}
+.bodyCart__price,
+.bodyCart__quantity {
+  text-align: center;
+}
+.bodyCart__del {
+  text-align: right;
+  cursor: pointer;
+}
+.bodyCart__price,
+.bodyCart__del {
+  color: #ef5b72;
+}
+.totalCart {
+  font-size: 25px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.totalCart span {
+  color: #ef5b72;
+}
+.shop,
+.productsList {
   margin-top: 40px;
+}
+.shop h3,
+.productsList h3 {
+  margin: 0 auto;
+}
+.filterProducts {
+  border-bottom: 1px solid #ececec;
 }
 .fetured__poster {
   margin-bottom: 30px;
@@ -67,7 +109,7 @@ a:hover {
   height: 281px;
   position: absolute;
   background: rgba(58, 56, 56, 0.83);
-  z-index: 9999;
+  z-index: 500;
   top: 0;
   font-size: 13px;
   font-weight: 700;
@@ -85,6 +127,9 @@ a:hover {
   height: 40px;
   border: 1px solid white;
   text-align: center;
+}
+.poster__header__botton a:hover {
+  background: #ef5b72;
 }
 .poster__header__botton a img {
   width: 23px;
@@ -108,12 +153,12 @@ a:hover {
   line-height: 12px;
   margin-top: 17px;
 }
-.searchBlock,
+.colour,
 .size,
 .price {
   margin-bottom: 40px;
 }
-.searchBlock h3,
+.colour h3,
 .size h3,
 .price h3 {
   margin-bottom: 25px;

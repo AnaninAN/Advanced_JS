@@ -27,9 +27,9 @@
 }
 .dropdown-item.active,
 .dropdown-item:active {
-  color: #ffffff;
+  color: black;
   text-decoration: none;
-  background-color: #ef5b72;
+  background-color: white;
 }
 .form-control {
   border: 1px solid #e6e6e6;
@@ -177,4 +177,9 @@ h3 {
   height: 5px;
   width: 65px;
   margin-top: -1px;
+}
+.dropdown-menu {
+  width: 500px;
+  position: absolute;
+  z-index: 9999;
 }

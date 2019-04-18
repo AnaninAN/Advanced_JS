@@ -1,13 +1,6 @@
 const express = require('express');
 const routerCart = express.Router();
 const Cart = require('../models/Cart');
-const Log = require('../models/Log');
-
-const writeLog = (action, product) => {
-    const logData = { action, product };
-
-    Log.create(logData);
-};
 
 routerCart.get('/', async (req, res) => {
     
@@ -28,8 +21,6 @@ routerCart.post('/', async (req, res) => {
         src: req.body.src,
         quantity: req.body.quantity
     };
-    
-    writeLog('Add', req.body.title);
     
     const cartItem = await Cart.create(cartData);
     const cart = await Cart.find({});

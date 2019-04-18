@@ -34,11 +34,15 @@ window.onload = () => {
     
     Vue.component('search-products', {
         template:`
-        <div>
-            <input type="text" class="searchQuery" placeholder="Введите строку для поиска" v-model="searchQuery">
-            <button class="buy btnSearch" @click="handleSearchClick">Поиск</button>
-            <button class="buy btnSearch" v-if="searchQuery.length" @click="handleClearSearchClick">Очистить фильтр</button>
-        </div>
+        <form class="input-group search">
+            <div class="input-group-prepend" v-if="searchQuery.length">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2" @click="handleClearSearchClick">Clear</button>
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Search for Item..." v-model="searchQuery">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2" @click="handleSearchClick"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
         `,
         data() {
             return {
@@ -46,13 +50,77 @@ window.onload = () => {
             }
         },
         methods: {
-            handleClearSearchClick() {
+             handleClearSearchClick() {
                 this.searchQuery = '';
                 this.$emit('onsearch', this.searchQuery);
             },
             handleSearchClick() {
                 this.$emit('onsearch', this.searchQuery);
             },
+        }
+    });
+    
+    Vue.component('filter-products', {
+        template:`
+        <div>
+            <div class="col-xl-4 col-sm-6 colour">
+                <h3>Colour</h3>
+            
+            </div>
+            <div class="col-xl-4 col-sm-6 size">
+                <h3>Size</h3>
+                <div class="row">
+                    <div class="col-3 d-flex align-items-center size__item">
+                        <input type="checkbox" id="size__item1">
+                        <label for="size__item1">XXS</label>
+                    </div>
+                    <div class="col-3 d-flex align-items-center size__item">
+                        <input type="checkbox" id="size__item2">
+                        <label for="size__item2">XS</label>
+                    </div>
+                    <div class="col-3 d-flex align-items-center size__item">
+                        <input type="checkbox" id="size__item3">
+                        <label for="size__item3">S</label>
+                    </div>
+                    <div class="col-3 d-flex align-items-center size__item">
+                        <input type="checkbox" id="size__item4">
+                        <label for="size__item4">M</label>
+                    </div>
+                    <div class="col-3 d-flex align-items-center size__item">
+                        <input type="checkbox" id="size__item5">
+                        <label for="size__item5">L</label>
+                    </div>
+                    <div class="col-3 d-flex align-items-center size__item">
+                        <input type="checkbox" id="size__item6">
+                        <label for="size__item6">XL</label>
+                    </div>
+                    <div class="col-3 d-flex align-items-center size__item">
+                        <input type="checkbox" id="size__item7">
+                        <label for="size__item7">XXL</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-sm-6 price">
+                <h3>Price</h3>
+                <div class="price__line">
+                    <div class="line__activ"></div>
+                    <div class="line__circle circle__pos1"></div>
+                    <div class="line__circle circle__pos2"></div>
+                </div>
+                <div class="row">
+                    <div class="col-6 price__value">$52</div>
+                    <div class="col-6 price__value">$400</div>
+                </div>
+            </div>
+        </div>
+        `,
+        data() {
+            return {
+               
+            }
+        },
+        methods: {
+            
         }
     });
     
@@ -72,7 +140,7 @@ window.onload = () => {
                 </div>
                 <div class="poster__footer">
                     <div class="poster__footer__title">{{ item.title }}</div>
-                    <div class="poster__footer__price">&#36;{{ item.price }}</div>
+                    <div class="poster__footer__price">&#36;{{ item.price }}.00</div>
                 </div>
             </div>
         </div>
@@ -120,12 +188,12 @@ window.onload = () => {
         props: ['item'],
         template:`
         <tr>
-            <th>{{ item.title.toUpperCase() }}</th>
-            <th>{{ item.price }}</th>
-            <th>{{ item.quantity }}</th>
-            <th>{{ item.price * item.quantity }}</th>
-            <th>
-                <button class="buy delProdCart" @click="handleDelClick(item)">X</button>
+            <th class="bodyCart__img"><img :src="item.src" :alt="item.title"></th>
+            <th class="bodyCart__title">{{ item.title.toUpperCase() }}</th>
+            <th class="bodyCart__price">&#36;{{ item.price }}</th>
+            <th class="bodyCart__quantity">{{ item.quantity }} шт.</th>
+            <th class="bodyCart__del">
+                <a class="delProdCart" @click="handleDelClick(item)">X</a>
             </th>
         </tr>
         `,
@@ -141,16 +209,9 @@ window.onload = () => {
         template:`
         <div>
             <table cellspacing="0" class="cartProduct" v-if="cart.length">
-                <tr class="headerCart">
-                    <th>product</th>
-                    <th>price</th>
-                    <th>quantity</th>
-                    <th>total</th>
-                    <th>action</th>
-                </tr>
                 <cart-item class="bodyCart" @ondel="handleDelClick" v-for="item in cart" :item="item"></cart-item>
             </table>
-            <div class="totalCart" v-if="cart.length">Общая сумма корзины: {{ total }}</div>
+            <div class="totalCart" v-if="cart.length">Total: <span>&#36;{{ total }}</span></div>
             <h3 v-if="!cart.length">Корзина пуста</h3>
         </div>
         `,
@@ -176,6 +237,11 @@ window.onload = () => {
                     this.total = result.total;
                     this.display = 'block';
                 });
+        },
+        computed: {
+            countProducts() {
+              return this.cart.reduce((acc, item) => acc + item.quantity, 0);
+            },
         },
         methods: {
             handleSearch(query) {
@@ -207,15 +273,14 @@ window.onload = () => {
                             this.total = result.total;
                         });
                 } else {
-                    if (confirm('Удалить из корзины товар ' + item.title.toUpperCase() + '?'))
-                        ProdApi.delete(`cart/${item.id}`)
-                            .then((result) => {
-                                const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
-                                this.cart.splice(itemIdx, 1);
-                                this.total = result.total;
-                            });
+                    ProdApi.delete(`cart/${item.id}`)
+                        .then((result) => {
+                            const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
+                            this.cart.splice(itemIdx, 1);
+                            this.total = result.total;
+                        });
                 }
             },
         }
-    });
+    });    
 }
