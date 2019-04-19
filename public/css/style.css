@@ -56,6 +56,11 @@ a:hover {
 .cartProduct {
   width: 100%;
 }
+.bodyCart {
+  height: 70px;
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+}
 .bodyCart__img img {
   height: 60px;
 }
@@ -72,6 +77,7 @@ a:hover {
   color: #ef5b72;
 }
 .totalCart {
+  margin-top: 10px;
   font-size: 25px;
   font-weight: 900;
   text-transform: uppercase;
@@ -130,6 +136,13 @@ a:hover {
 }
 .poster__header__botton a:hover {
   background: #ef5b72;
+}
+.poster__header__botton a:active {
+  color: black;
+  border: 1px solid black;
+}
+.poster__header__botton a:active img {
+  filter: grayscale(100%);
 }
 .poster__header__botton a img {
   width: 23px;
