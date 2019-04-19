@@ -16,15 +16,15 @@
 </head>
 
 <body>
-    <div id="app" :style="{ display:display }">
+    <div id="app" :style="{ display: display }">
         <header class="header">
             <header-shop class="container" :countproducts="countProducts" :cart="cart" :total="total" @onsearch="handleSearch" @ondel="handleDelClick"></header-shop>
         </header>
         <section class="container shop">
             <div class="row">
                 <div class="col-md-12">
-                    <!--<filter-products class="row filterProducts"></filter-products>-->
-                    <products class="row productsList" @onbuy="handleBuyClick" :query="searchQuery" :display="display"></products>
+                    <h2 v-if="cart.length"><strong>Cart ({{ countProducts }} pc. product)</strong></h2><br v-if="cart.length">
+                    <cart class="cart" @ondel="handleDelClick" @ondelall="handleDelAllCartClick" :cart="cart" :total="total" :carthtml="true"></cart>
                 </div>
             </div>
         </section>

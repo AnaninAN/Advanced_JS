@@ -54,4 +54,13 @@ routerCart.delete('/:id', async (req, res) => {
     });
 });
 
+routerCart.delete('/', async (req, res) => {
+    
+    await Cart.remove();
+
+    res.status(200).send({
+        total: 0
+    });
+});
+
 module.exports = routerCart;

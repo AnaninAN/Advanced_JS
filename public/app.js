@@ -30,7 +30,132 @@ window.onload = () => {
             })
                 .then((response) => response.json());
         };
+        
+        static deleteAll(db) {
+            return fetch(`${API_URL}/${db}`, {
+                method: 'DELETE',
+            })
+                .then((response) => response.json());
+        };
     };
+    
+    Vue.component('header-shop',{
+        props: ['countproducts','cart','total'],
+        template:`
+        <div>
+            <div class="row align-items-center">
+                <div class="col-xl-2 col-md-3">
+                    <a href="index.html" class="logo">
+                        <img src="img/logo.png" alt="Brand" class="logo__img">
+                        BRAN<span>D</span>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-7">
+                    <search-products @onsearch="handleSearch"></search-products>
+                </div>
+                <div class="col-md-5 col-sm-7">
+
+                </div>
+                <div class="col">
+                    <cart-btn class="btn-group basket" :countproducts="countproducts" :cart="cart" :total="total" :carthtml="false" @ondel="handleDelClick"></cart-btn>
+                </div>
+            </div>
+        </div>
+        `,
+        methods: {
+            handleSearch(search) {
+                this.$emit('onsearch', search);
+            },
+            handleDelClick(item) {
+                this.$emit('ondel', item);
+            },
+        }
+    });
+    
+    Vue.component('footer-shop',{
+        template:`
+        <div>
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="footer__top__brand">
+                        <a href="index.html" class="logo top__brand">
+                            <img src="img/logo.png" alt="Brand" class="logo__img">
+                            BRAN<span>D</span>
+                        </a>
+                        <p>Objectively transition extensive data rather than cross functional solutions. Monotonectally syndicate multidisciplinary materials before go&nbsp;forward benefits. Intrinsicly syndicate an&nbsp;expanded array of&nbsp;processes and cross-unit partnerships.</p>
+                        <p>Efficiently plagiarize 24/365 action items and focused infomediaries. Distinctively seize superior initiatives for wireless technologies. Dynamically optimize.</p>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="footer__top">
+                        <h5>COMPANY</h5>
+                        <p><a href="#">Home</a></p>
+                        <p><a href="#">Shop</a></p>
+                        <p><a href="#">About</a></p>
+                        <p><a href="#">How It&nbsp;Works</a></p>
+                        <p><a href="#">Contact</a></p>
+                    </div>
+                </div>
+                <div class="col-lg-2 d-flex justify-content-lg-end">
+                    <div class="footer__top">
+                        <h5>INFORMATION</h5> 
+                        <p><a href="#">Tearms&amp;Condition</a></p>
+                        <p><a href="#">Privacy&nbsp;Policy</a></p>
+                        <p><a href="#">How&nbsp;to&nbsp;Buy</a></p>
+                        <p><a href="#">How to&nbsp;Sell</a></p>
+                        <p><a href="#">Promotion</a></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 d-flex justify-content-lg-end">
+                    <div class="footer__top">
+                        <h5>SHOP CATEGORY</h5>
+                        <p><a href="#">Men</a></p>
+                        <p><a href="#">Women</a></p>
+                        <p><a href="#">Child</a></p>
+                        <p><a href="#">Apparel</a></p>
+                        <p><a href="#">Brows All</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `,
+    });
+    
+    Vue.component('subscribe__reviews',{
+        template:`
+        <div>
+            <div class="row subscribeBlock">
+                <div class="col-md-6 subscribe__reviews">
+                    <div class="reviews">
+                        <div class="reviews__img">
+                            <img src="img/icon_feedback.png" alt="">
+                        </div>
+                        <div class="reviews__text">
+                            &laquo;Vestibulum quis porttitor dui! Quisque viverra nunc&nbsp;mi, a&nbsp;pulvinar purus condimentum&nbsp;a. Aliquam condimentum mattis neque sed pretium&raquo;
+                            <div class="reviews__text__author">Bin Burhan</div>
+                            <div class="reviews__text__address">Dhaka, Bd</div>
+                            <div class="reviews__slider">
+                                <div class="slider__form"></div>
+                                <div class="slider__form"></div>
+                                <div class="slider__form"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex justify-content-center align-items-center">
+                    <div class="subscribe__email">
+                        <div class="subscribe__title">SUBSCRIBE</div>
+                        <div class="subscribe__text">FOR OUR NEWLETTER AND PROMOTION</div>
+                        <form action="" class="input__block">
+                            <input type="text" placeholder="Enter Your Email">
+                            <button>Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `,
+    });
     
     Vue.component('search-products', {
         template:`
@@ -56,6 +181,31 @@ window.onload = () => {
             },
             handleSearchClick() {
                 this.$emit('onsearch', this.searchQuery);
+            },
+        }
+    });
+    
+    Vue.component('cart-btn',{
+        props: ['countproducts','cart','total'],
+        template:`
+        <div>
+            <button type="button" class="btn btn-primary dropdown-toggle basket__btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="basket__ico">
+                    <img src="img/basket.png" alt="Basket" class="basket__img">
+                    <span class="badge badge-pill badge-light countProducts">{{ countproducts }}</span>
+                </div>
+                Cart
+            </button>
+            <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" @click.stop>
+                <div class="dropdown-item">
+                    <cart class="cart" @ondel="handleDelClick" :cart="cart" :total="total"></cart>
+                </div>
+            </div>
+        </div>
+        `,
+        methods: {
+            handleDelClick(item) {
+                this.$emit('ondel', item);
             },
         }
     });
@@ -185,15 +335,15 @@ window.onload = () => {
     });
     
     Vue.component('cart-item', {
-        props: ['item'],
+        props: ['item','carthtml'],
         template:`
         <tr>
-            <th class="bodyCart__img"><img :src="item.src" :alt="item.title"></th>
+            <th class="bodyCart__img"><img :class="{bigImgProdCart: carthtml, smallImgProdCart: !carthtml}" :src="item.src" :alt="item.title"></th>
             <th class="bodyCart__title">{{ item.title.toUpperCase() }}</th>
             <th class="bodyCart__price">&#36;{{ item.price }}</th>
-            <th class="bodyCart__quantity">{{ item.quantity }} шт.</th>
-            <th class="bodyCart__del">
-                <a class="delProdCart" @click="handleDelClick(item)">X</a>
+            <th class="bodyCart__quantity">{{ item.quantity }} pc.</th>
+            <th :class="{'bodyCart__del': !carthtml}">
+                <a href="#" :class="{delProdCart: carthtml}" @click.prevent="handleDelClick(item)">X</a>
             </th>
         </tr>
         `,
@@ -205,19 +355,32 @@ window.onload = () => {
     });
     
     Vue.component('cart', {
-        props: ['cart','total'],
+        props: ['cart','total','carthtml'],
         template:`
         <div>
             <table cellspacing="0" class="cartProduct" v-if="cart.length">
-                <cart-item class="bodyCart" @ondel="handleDelClick" v-for="item in cart" :item="item"></cart-item>
+                <cart-item class="bodyCart" @ondel="handleDelClick" v-for="item in cart" :item="item" :carthtml="carthtml"></cart-item>
             </table>
-            <div class="totalCart" v-if="cart.length">Total: <span>&#36;{{ total }}</span></div>
+            <div class="bodyCart__footer" v-if="cart.length && !carthtml">
+                <div class="totalCart">Total: <span>&#36;{{ total }}</span></div>
+                <a href="cart.html" class="btn btn-primary goToCart">go to cart</a>
+            </div>
             <h3 v-if="!cart.length">Корзина пуста</h3>
+            <div class="btnCart" v-if="carthtml">
+                <button type="button" class="btn btn-primary" v-if="cart.length" @click="handleDelAllCartClick">Clear shopping cart</button>
+                <a href="index.html" class="btn btn-primary">Continue shopping</a>
+            </div>
+            <div class="grandTotal" v-if="cart.length && carthtml">
+                Grand total &#8195;<span>&#36;{{ total }}</span>
+            </div>
         </div>
         `,
         methods: {
             handleDelClick(item) {
                 this.$emit('ondel', item);
+            },
+            handleDelAllCartClick() {
+                this.$emit('ondelall');
             },
         }
     });
@@ -280,6 +443,14 @@ window.onload = () => {
                             this.total = result.total;
                         });
                 }
+            },
+            handleDelAllCartClick() {
+                ProdApi.deleteAll('Cart')
+                    .then((result) => {
+                        this.cart = [];
+                        this.total = result.total;
+                        window.scrollTo(0, 0)
+                    });
             },
         }
     });    
