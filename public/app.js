@@ -53,10 +53,12 @@ window.onload = () => {
                 <div class="col-md-3 col-sm-7">
                     <search-products @onsearch="handleSearch"></search-products>
                 </div>
-                <div class="col-md-5 col-sm-7">
-
+                <div class="col-md-4 col-sm-7 signReg">
+                    <a href="#myModal" data-toggle="modal" @click.prevent>Sign in</a>
+                    &#8195;|&#8195;
+                    <a href="#myModal" data-toggle="modal" @click.prevent>Registration</a>
                 </div>
-                <div class="col">
+                <div class="col-md-2">
                     <cart-btn class="btn-group basket" :countproducts="countproducts" :cart="cart" :total="total" :carthtml="false" @ondel="handleDelClick"></cart-btn>
                 </div>
             </div>
