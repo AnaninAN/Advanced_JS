@@ -394,18 +394,32 @@ window.onload = () => {
             cart: [],
             total: 0,
             display: 'none',
+            idUser: 0,
         },
         mounted() {
-            ProdApi.fetch('cart')
-                .then((result) => {
-                    this.cart = result.items;
-                    this.total = result.total;
-                    this.display = 'block';
-                });
+            if (this.idUser === 0) {
+                if (JSON.parse(localStorage.getItem('Cart')) !== null) {
+                    this.cart = JSON.parse(localStorage.getItem('Cart'));
+                    this.total = this.grandTotal;
+                }
+                this.display = 'block';
+                
+            } else {
+                ProdApi.fetch('cart')
+                    .then((result) => {
+                        this.cart = result.items;
+                        this.total = result.total;
+                        this.display = 'block';
+                    });
+            }
+
         },
         computed: {
             countProducts() {
-              return this.cart.reduce((acc, item) => acc + item.quantity, 0);
+                return this.cart.reduce((acc, item) => acc + item.quantity, 0);
+            },
+            grandTotal() {
+                return this.cart.reduce((acc, item) => acc + item.quantity * item.price, 0);    
             },
         },
         methods: {
@@ -415,44 +429,90 @@ window.onload = () => {
             handleBuyClick(item) {
                 const cartItem = this.cart.find((cartItem) => cartItem.id === item.id);                
                 if(cartItem) {
-                    ProdApi.change(`cart/${item.id}`, {quantity: cartItem.quantity + 1})    
-                        .then((result) => {
-                            const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
-                            Vue.set(this.cart, itemIdx, result.item);
-                            this.total = result.total;
-                        });
+                    if (this.idUser === 0) {
+                        
+                        const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
+                        Vue.set(this.cart, itemIdx, {...item, quantity: cartItem.quantity + 1});
+                        this.total = this.grandTotal;
+                        const localCart = JSON.stringify(this.cart);
+                        localStorage.setItem("Cart", localCart);
+                        
+                    } else {
+                        ProdApi.change(`cart/${item.id}`, {quantity: cartItem.quantity + 1})    
+                            .then((result) => {
+                                const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
+                                Vue.set(this.cart, itemIdx, result.item);
+                                this.total = result.total;
+                            });
+                    }
                 } else {
-                    ProdApi.create('cart', {...item, quantity: 1})
+                    if (this.idUser === 0) {
+                        
+                        this.cart.push({...item, quantity: 1});
+                        this.total = this.grandTotal;
+                        const localCart = JSON.stringify(this.cart);
+                        localStorage.setItem("Cart", localCart);
+                        
+                    } else {
+                        ProdApi.create('cart', {...item, quantity: 1})
                         .then((result) => {
                             this.cart.push(result.item);
                             this.total = result.total;
                         });
+                    }
                 }
             },
             handleDelClick(item) {
                 if(item.quantity > 1) {
-                    ProdApi.change(`cart/${item.id}`, {quantity: item.quantity - 1})
-                        .then((result) => {
-                            const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
-                            Vue.set(this.cart, itemIdx, result.item);
-                            this.total = result.total;
-                        });
+                    if (this.idUser === 0) {
+                        
+                        const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
+                        Vue.set(this.cart, itemIdx, {...item, quantity: item.quantity - 1});
+                        this.total = this.grandTotal;
+                        const localCart = JSON.stringify(this.cart);
+                        localStorage.setItem("Cart", localCart);
+                        
+                    } else {
+                        ProdApi.change(`cart/${item.id}`, {quantity: item.quantity - 1})
+                            .then((result) => {
+                                const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
+                                Vue.set(this.cart, itemIdx, result.item);
+                                this.total = result.total;
+                            });
+                    }
                 } else {
-                    ProdApi.delete(`cart/${item.id}`)
-                        .then((result) => {
-                            const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
-                            this.cart.splice(itemIdx, 1);
-                            this.total = result.total;
-                        });
+                    if (this.idUser === 0) {
+                        
+                        const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
+                        this.cart.splice(itemIdx, 1);
+                        this.total = this.grandTotal;
+                        const localCart = JSON.stringify(this.cart);
+                        localStorage.setItem("Cart", localCart);
+                        
+                    } else {
+                        ProdApi.delete(`cart/${item.id}`)
+                            .then((result) => {
+                                const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
+                                this.cart.splice(itemIdx, 1);
+                                this.total = result.total;
+                            });
+                    }
                 }
             },
             handleDelAllCartClick() {
-                ProdApi.deleteAll('Cart')
-                    .then((result) => {
-                        this.cart = [];
-                        this.total = result.total;
-                        window.scrollTo(0, 0)
-                    });
+                if (this.idUser === 0) {
+                    this.cart = [];
+                    this.total = 0;
+                    localStorage.clear();
+                    window.scrollTo(0, 0);
+                } else {
+                    ProdApi.deleteAll('Cart')
+                        .then((result) => {
+                            this.cart = result.item;
+                            this.total = result.total;
+                            window.scrollTo(0, 0)
+                        });
+                }
             },
         }
     });    
