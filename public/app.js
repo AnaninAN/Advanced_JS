@@ -40,7 +40,7 @@ window.onload = () => {
     };
     
     Vue.component('header-shop',{
-        props: ['countproducts','cart','total'],
+        props: ['countproducts','cart','total','iduser','name'],
         template:`
         <div>
             <div class="row align-items-center">
@@ -53,10 +53,14 @@ window.onload = () => {
                 <div class="col-md-3 col-sm-7">
                     <search-products @onsearch="handleSearch"></search-products>
                 </div>
-                <div class="col-md-5 col-sm-7">
-
+                <div class="col-md-4 col-sm-7 signReg">
+                    <a href="#myModal" data-toggle="modal" v-if="!iduser.length" @click.prevent="SignIn">Sign in</a>
+                    <a href="#" v-if="iduser.length">Hello,&#8194;<span class="nameUser">{{ name }}</span></a>
+                    &#8195;|&#8195;
+                    <a href="#myModal" data-toggle="modal" v-if="!iduser.length" @click.prevent="Reg">Registration</a>
+                    <a href="#" v-if="iduser.length" @click.prevent.stop="logout">log out</a>
                 </div>
-                <div class="col">
+                <div class="col-md-2">
                     <cart-btn class="btn-group basket" :countproducts="countproducts" :cart="cart" :total="total" :carthtml="false" @ondel="handleDelClick"></cart-btn>
                 </div>
             </div>
@@ -65,11 +69,20 @@ window.onload = () => {
         methods: {
             handleSearch(search) {
                 this.$emit('onsearch', search);
-            },
+            }, 
             handleDelClick(item) {
                 this.$emit('ondel', item);
             },
-        }
+            SignIn() {
+                this.$emit('onsignin');
+            },
+            Reg() {
+                this.$emit('onreg');
+            },
+            logout() {
+                this.$emit('onlogout');
+            },
+        },
     });
     
     Vue.component('footer-shop',{
@@ -392,65 +405,186 @@ window.onload = () => {
             cart: [],
             total: 0,
             display: 'none',
+            idUser: '',
+            signIn: true,
+            login: '',
+            passwd: '',
+            name: '',
         },
         mounted() {
-            ProdApi.fetch('cart')
-                .then((result) => {
-                    this.cart = result.items;
-                    this.total = result.total;
-                    this.display = 'block';
-                });
+            if (localStorage.getItem('idUser') !== null) {
+                this.idUser = localStorage.getItem('idUser');
+                this.name = localStorage.getItem('name');
+            }
+            
+            if (!this.idUser.length) {
+                if (localStorage.getItem('Cart') !== null) {
+                    this.cart = JSON.parse(localStorage.getItem('Cart'));
+                    this.total = this.grandTotal;
+                }
+                this.display = 'block';
+                
+            } else {
+                ProdApi.fetch('cart')
+                    .then((result) => {
+                        this.cart = result.items;
+                        this.total = result.total;
+                        this.display = 'block';
+                    });
+            }
+
         },
         computed: {
             countProducts() {
-              return this.cart.reduce((acc, item) => acc + item.quantity, 0);
+                return this.cart.reduce((acc, item) => acc + item.quantity, 0);
+            },
+            grandTotal() {
+                return this.cart.reduce((acc, item) => acc + item.quantity * item.price, 0);    
             },
         },
         methods: {
+            SignIn() {
+                this.signIn = true;
+            },
+            Reg() {
+                this.signIn = false;
+            },
+            logout() {
+                this.idUser = '';
+                this.name = '';
+                localStorage.setItem("idUser", this.idUser);
+                localStorage.setItem("name", this.name);
+                if (localStorage.getItem('Cart') !== null) {
+                    this.cart = JSON.parse(localStorage.getItem('Cart'));
+                    this.total = this.grandTotal;
+                } else {
+                    this.cart = [];
+                    this.total = 0;
+                }
+            },
+            handleSignIn() {
+                ProdApi.create('users', {login: this.login, passwd: this.passwd})
+                    .then((result) => {
+                        if (result.id !== 'err') {
+                            this.idUser = result.id;
+                            this.name = result.name;
+                            this.login = '';
+                            this.passwd = '';
+                            localStorage.setItem("idUser", this.idUser);
+                            localStorage.setItem("name", this.name);
+                            $(".modal").modal("hide");
+                            ProdApi.fetch('cart')
+                                .then((result) => {
+                                    this.cart = result.items;
+                                    this.total = result.total;
+                                });
+                        } else {
+                            this.passwd = '';
+                            this.login = 'WARNING: Wrong login or password';
+                        }
+                    });
+            },
+            handleRegIn() {
+                ProdApi.create('users', {login: this.login, passwd: this.passwd, name: this.name})
+                    .then((result) => {
+                        this.idUser = result.id;
+                        this.name = result.name;
+                        this.passwd = '';
+                        localStorage.setItem("idUser", this.idUser);
+                        localStorage.setItem("name", this.name);
+                        $(".modal").modal("hide");
+                    });
+            },
             handleSearch(query) {
                 this.searchQuery = query;
             },
             handleBuyClick(item) {
                 const cartItem = this.cart.find((cartItem) => cartItem.id === item.id);                
                 if(cartItem) {
-                    ProdApi.change(`cart/${item.id}`, {quantity: cartItem.quantity + 1})    
-                        .then((result) => {
-                            const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
-                            Vue.set(this.cart, itemIdx, result.item);
-                            this.total = result.total;
-                        });
+                    if (!this.idUser.length) {
+                        
+                        const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
+                        Vue.set(this.cart, itemIdx, {...item, quantity: cartItem.quantity + 1});
+                        this.total = this.grandTotal;
+                        const localCart = JSON.stringify(this.cart);
+                        localStorage.setItem("Cart", localCart);
+                        
+                    } else {
+                        ProdApi.change(`cart/${item.id}`, {quantity: cartItem.quantity + 1})    
+                            .then((result) => {
+                                const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
+                                Vue.set(this.cart, itemIdx, result.item);
+                                this.total = result.total;
+                            });
+                    }
                 } else {
-                    ProdApi.create('cart', {...item, quantity: 1})
+                    if (!this.idUser.length) {
+                        
+                        this.cart.push({...item, quantity: 1});
+                        this.total = this.grandTotal;
+                        const localCart = JSON.stringify(this.cart);
+                        localStorage.setItem("Cart", localCart);
+                        
+                    } else {
+                        ProdApi.create('cart', {...item, quantity: 1})
                         .then((result) => {
                             this.cart.push(result.item);
                             this.total = result.total;
                         });
+                    }
                 }
             },
             handleDelClick(item) {
                 if(item.quantity > 1) {
-                    ProdApi.change(`cart/${item.id}`, {quantity: item.quantity - 1})
-                        .then((result) => {
-                            const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
-                            Vue.set(this.cart, itemIdx, result.item);
-                            this.total = result.total;
-                        });
+                    if (!this.idUser.length) {
+                        
+                        const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
+                        Vue.set(this.cart, itemIdx, {...item, quantity: item.quantity - 1});
+                        this.total = this.grandTotal;
+                        const localCart = JSON.stringify(this.cart);
+                        localStorage.setItem("Cart", localCart);
+                        
+                    } else {
+                        ProdApi.change(`cart/${item.id}`, {quantity: item.quantity - 1})
+                            .then((result) => {
+                                const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
+                                Vue.set(this.cart, itemIdx, result.item);
+                                this.total = result.total;
+                            });
+                    }
                 } else {
-                    ProdApi.delete(`cart/${item.id}`)
-                        .then((result) => {
-                            const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
-                            this.cart.splice(itemIdx, 1);
-                            this.total = result.total;
-                        });
+                    if (!this.idUser.length) {
+                        
+                        const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
+                        this.cart.splice(itemIdx, 1);
+                        this.total = this.grandTotal;
+                        const localCart = JSON.stringify(this.cart);
+                        localStorage.setItem("Cart", localCart);
+                        
+                    } else {
+                        ProdApi.delete(`cart/${item.id}`)
+                            .then((result) => {
+                                const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
+                                this.cart.splice(itemIdx, 1);
+                                this.total = result.total;
+                            });
+                    }
                 }
             },
             handleDelAllCartClick() {
-                ProdApi.deleteAll('Cart')
-                    .then((result) => {
-                        this.cart = [];
-                        this.total = result.total;
-                        window.scrollTo(0, 0)
-                    });
+                if (!this.idUser.length) {
+                    this.cart = [];
+                    this.total = 0;
+                    localStorage.clear();
+                    window.scrollTo(0, 0);
+                } else {
+                    ProdApi.deleteAll('Cart')
+                        .then((result) => {
+                            this.cart = result.item;
+                            this.total = result.total;
+                            window.scrollTo(0, 0)
+                        });
+                }
             },
         }
     });    

@@ -14,15 +14,7 @@ routerCart.get('/', async (req, res) => {
 
 routerCart.post('/', async (req, res) => {
     
-    const cartData = {
-        id: req.body.id,
-        title: req.body.title,
-        price: req.body.price,
-        src: req.body.src,
-        quantity: req.body.quantity
-    };
-    
-    const cartItem = await Cart.create(cartData);
+    const cartItem = await Cart.create(req.body);
     const cart = await Cart.find({});
     
     res.status(201).send({
