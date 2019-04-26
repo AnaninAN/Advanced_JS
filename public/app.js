@@ -54,10 +54,10 @@ window.onload = () => {
                     <search-products @onsearch="handleSearch"></search-products>
                 </div>
                 <div class="col-md-4 col-sm-7 signReg">
-                    <a href="#myModal" data-toggle="modal" v-if="!iduser.length" @click.prevent="SignIn">Sign in</a>
+                    <a href="#myModal" data-toggle="modal" v-if="!iduser.length" @click.prevent="signIn">Sign in</a>
                     <a href="#" v-if="iduser.length">Hello,&#8194;<span class="nameUser">{{ name }}</span></a>
                     &#8195;|&#8195;
-                    <a href="#myModal" data-toggle="modal" v-if="!iduser.length" @click.prevent="Reg">Registration</a>
+                    <a href="#myModal" data-toggle="modal" v-if="!iduser.length" @click.prevent="reg">Registration</a>
                     <a href="#" v-if="iduser.length" @click.prevent.stop="logout">log out</a>
                 </div>
                 <div class="col-md-2">
@@ -73,10 +73,10 @@ window.onload = () => {
             handleDelClick(item) {
                 this.$emit('ondel', item);
             },
-            SignIn() {
+            signIn() {
                 this.$emit('onsignin');
             },
-            Reg() {
+            reg() {
                 this.$emit('onreg');
             },
             logout() {
@@ -408,8 +408,11 @@ window.onload = () => {
             idUser: '',
             signIn: true,
             login: '',
-            passwd: '',
+            passwd1: '',
+            passwd2: '',
+            email: '',
             name: '',
+            warning: '',
         },
         mounted() {
             if (localStorage.getItem('idUser') !== null) {
@@ -425,7 +428,7 @@ window.onload = () => {
                 this.display = 'block';
                 
             } else {
-                ProdApi.fetch('cart')
+                ProdApi.fetch(`cart/${this.idUser}`)
                     .then((result) => {
                         this.cart = result.items;
                         this.total = result.total;
@@ -443,13 +446,15 @@ window.onload = () => {
             },
         },
         methods: {
-            SignIn() {
+            linkSignIn() {
+                this.warning = '';
                 this.signIn = true;
             },
-            Reg() {
+            linkReg() {
+                this.warning = '';
                 this.signIn = false;
             },
-            logout() {
+            logOut() {
                 this.idUser = '';
                 this.name = '';
                 localStorage.setItem("idUser", this.idUser);
@@ -463,33 +468,43 @@ window.onload = () => {
                 }
             },
             handleSignIn() {
-                ProdApi.create('users', {login: this.login, passwd: this.passwd})
-                    .then((result) => {
-                        if (result.id !== 'err') {
-                            this.idUser = result.id;
-                            this.name = result.name;
-                            this.login = '';
-                            this.passwd = '';
-                            localStorage.setItem("idUser", this.idUser);
-                            localStorage.setItem("name", this.name);
-                            $(".modal").modal("hide");
-                            ProdApi.fetch('cart')
-                                .then((result) => {
-                                    this.cart = result.items;
-                                    this.total = result.total;
-                                });
-                        } else {
-                            this.passwd = '';
-                            this.login = 'WARNING: Wrong login or password';
-                        }
-                    });
-            },
-            handleRegIn() {
-                ProdApi.create('users', {login: this.login, passwd: this.passwd, name: this.name})
+                this.warning = '';
+                
+                ProdApi.create('users', {login: this.login, passwd: this.passwd1})
                     .then((result) => {
                         this.idUser = result.id;
                         this.name = result.name;
-                        this.passwd = '';
+                        this.login = '';
+                        this.passwd1 = '';
+                        localStorage.setItem("idUser", this.idUser);
+                        localStorage.setItem("name", this.name);
+                        $(".modal").modal("hide");
+                        ProdApi.fetch(`cart/${this.idUser}`)
+                            .then((result) => {
+                                this.cart = result.items;
+                                this.total = result.total;
+                            });
+                    })
+                .catch(() => {
+                    this.login = '';
+                    this.passwd1 = '';
+                    this.warning = 'Wrong login or password!';
+                });
+            },
+            handleRegIn() {
+                this.warning = '';
+                if (!this.login.length || !this.passwd1.length || !this.passwd2.length || !this.email.length || !this.name.length) return this.warning = 'Fill in all the fields!';
+                if (this.passwd1 !== this.passwd2) return this.warning = 'Passwords do not match!';
+                if (!/^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$/i.test(this.email)) return this.warning = 'Not valid email!';
+            
+                ProdApi.create('users', {login: this.login, passwd: this.passwd1, name: this.name, email: this.email})
+                    .then((result) => {
+                        this.idUser = result.id;
+                        this.name = result.name;
+                        this.login = '';
+                        this.passwd1 = '';
+                        this.passwd2 = '';
+                        this.email = '';
                         localStorage.setItem("idUser", this.idUser);
                         localStorage.setItem("name", this.name);
                         $(".modal").modal("hide");
@@ -510,7 +525,7 @@ window.onload = () => {
                         localStorage.setItem("Cart", localCart);
                         
                     } else {
-                        ProdApi.change(`cart/${item.id}`, {quantity: cartItem.quantity + 1})    
+                        ProdApi.change(`cart/${item.id}&${this.idUser}`, {quantity: cartItem.quantity + 1})    
                             .then((result) => {
                                 const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
                                 Vue.set(this.cart, itemIdx, result.item);
@@ -526,7 +541,7 @@ window.onload = () => {
                         localStorage.setItem("Cart", localCart);
                         
                     } else {
-                        ProdApi.create('cart', {...item, quantity: 1})
+                        ProdApi.create('cart', {...item, quantity: 1, iduser: this.idUser})
                         .then((result) => {
                             this.cart.push(result.item);
                             this.total = result.total;
@@ -545,7 +560,7 @@ window.onload = () => {
                         localStorage.setItem("Cart", localCart);
                         
                     } else {
-                        ProdApi.change(`cart/${item.id}`, {quantity: item.quantity - 1})
+                        ProdApi.change(`cart/${item.id}&${this.idUser}`, {quantity: item.quantity - 1})
                             .then((result) => {
                                 const itemIdx = this.cart.findIndex(cartItem => cartItem.id === item.id);
                                 Vue.set(this.cart, itemIdx, result.item);
@@ -562,7 +577,7 @@ window.onload = () => {
                         localStorage.setItem("Cart", localCart);
                         
                     } else {
-                        ProdApi.delete(`cart/${item.id}`)
+                        ProdApi.delete(`cart/${item.id}&${this.idUser}`)
                             .then((result) => {
                                 const itemIdx = this.cart.findIndex((cartItem) => cartItem.id === item.id);
                                 this.cart.splice(itemIdx, 1);

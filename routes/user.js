@@ -22,9 +22,7 @@ routerUser.post('/', async (req, res) => {
                 name: item.name
             });
         } else {
-            res.status(404).send({
-                id: 'err'
-            });
+            res.status(404).end('Wrong login or password!');
         }
     }
 });

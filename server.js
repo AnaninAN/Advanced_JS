@@ -7,7 +7,7 @@ const cartRouter = require('./routes/cart');
 const userRouter = require('./routes/user');
 const port = process.env.PORT || config.port;
 
-mongoose.connect(config.mongoURI)
+mongoose.connect(config.mongoURI, { useNewUrlParser: true })
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.error(err));
 

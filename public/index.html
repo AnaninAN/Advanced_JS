@@ -18,7 +18,7 @@
 <body>
     <div id="app" :style="{ display:display }">
         <header class="header">
-            <header-shop class="container" :countproducts="countProducts" :cart="cart" :total="total" @onsearch="handleSearch" @ondel="handleDelClick" @onsignin="SignIn" @onreg="Reg" @onlogout="logout" :iduser="idUser" :name="name"></header-shop>
+            <header-shop class="container" :countproducts="countProducts" :cart="cart" :total="total" @onsearch="handleSearch" @ondel="handleDelClick" @onsignin="linkSignIn" @onreg="linkReg" @onlogout="logOut" :iduser="idUser" :name="name"></header-shop>
         </header>
         <section class="container shop">
             <div class="row">
@@ -35,13 +35,13 @@
             <footer-shop class="container"></footer-shop>
         </footer>
     
-    <!-- Modal -->
+   <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel" v-if="signIn">Sign in</h5>
-                    <h5 class="modal-title" id="exampleModalLabel" v-if="!signIn">Registration</h5>
+                    <h5 class="modal-title" id="exampleModalLabel" v-if="signIn">Sign in<span class="warning" v-model="warning">&#8194;{{ warning }}</span></h5>
+                    <h5 class="modal-title" id="exampleModalLabel" v-if="!signIn">Registration<span class="warning" v-model="warning">&#8194;{{ warning }}</span></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -54,24 +54,37 @@
                         </div>
                         <div class="form-group">
                             <label for="inputPassword">Password</label>
-                            <input type="password" class="form-control" id="inputPassword" placeholder="Password" v-model="passwd">
+                            <input type="password" class="form-control" id="inputPassword" placeholder="Password" v-model="passwd1">
                         </div>
                     </form>
                     
                     <form v-if="!signIn">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="inputLoginReg">Login</label>
-                                <input type="email" class="form-control" id="inputLoginReg" placeholder="Login" v-model="login">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputPasswordReg">Password</label>
-                                <input type="password" class="form-control" id="inputPasswordReg" placeholder="Password" v-model="passwd">
+                        <div class="form-group">
+                            <label for="inputLoginReg">Username</label>
+                            <input type="text" class="form-control" id="inputLoginReg" placeholder="enter username" v-model="login">
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="inputPasswordReg1">Password</label>
+                                    <input type="password" class="form-control" id="inputPasswordReg1" placeholder="enter password" v-model="passwd1">
+                                </div>
+                                <div class="col">
+                                    <label for="inputPasswordReg2">Confirm password</label>
+                                    <input type="password" class="form-control" id="inputPasswordReg2" placeholder="enter password" v-model="passwd2">
+                                </div>
                             </div>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="inputEmail">Email</label>
+                            <input type="email" class="form-control" id="inputEmail" placeholder="enter email" v-model="email">
+                        </div>
+                        
                         <div class="form-group">
                             <label for="inputName">Name</label>
-                            <input type="text" class="form-control" id="inputName" placeholder="Name" v-model="name">
+                            <input type="text" class="form-control" id="inputName" placeholder="enter name" v-model="name">
                         </div>
                     </form>
                 </div>

@@ -6,6 +6,10 @@ const cartSchema = new Schema({
         type: Number,
         required: true
     },
+    iduser: {
+        type: String,
+        required: true
+    },
     title: {
         type: String,
         required: true

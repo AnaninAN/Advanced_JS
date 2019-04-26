@@ -40,18 +40,46 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel" v-if="signIn">Sign in</h5>
+                    <h5 class="modal-title" id="exampleModalLabel" v-if="signIn">Sign in<span class="warning" v-model="warning">&#8194;{{ warning }}</span></h5>
                     <h5 class="modal-title" id="exampleModalLabel" v-if="!signIn">Registration</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                ...
+                    <form v-if="signIn">
+                        <div class="form-group">
+                            <label for="inputLogin">Login</label>
+                            <input type="email" class="form-control" id="inputLogin" aria-describedby="emailHelp" placeholder="Enter login" v-model="login">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword">Password</label>
+                            <input type="password" class="form-control" id="inputPassword" placeholder="Password" v-model="passwd">
+                        </div>
+                    </form>
+                    
+                    <form v-if="!signIn">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputLoginReg">Username</label>
+                                <input type="email" class="form-control" id="inputLoginReg" placeholder="Enter username" v-model="login">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPasswordReg">Password</label>
+                                <input type="password" class="form-control" id="inputPasswordReg" placeholder="enter password" v-model="passwd1">
+                                <input type="password" class="form-control" placeholder="enter password" v-model="passwd2">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputName">Name</label>
+                            <input type="text" class="form-control" id="inputName" placeholder="Name" v-model="name">
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" v-if="signIn" @click="handleSignIn">Sign in</button>
+                    <button type="button" class="btn btn-primary" v-if="!signIn" @click="handleRegIn">To register</button>
                 </div>
             </div>
         </div>

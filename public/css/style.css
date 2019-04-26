@@ -40,6 +40,10 @@ a:hover {
   color: blue;
   text-decoration: underline;
 }
+.warning {
+  color: red;
+  font-weight: 700;
+}
 .basket {
   float: right;
 }

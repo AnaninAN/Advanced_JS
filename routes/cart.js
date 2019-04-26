@@ -2,9 +2,9 @@ const express = require('express');
 const routerCart = express.Router();
 const Cart = require('../models/Cart');
 
-routerCart.get('/', async (req, res) => {
+routerCart.get('/:iduser', async (req, res) => {
     
-    const cart = await Cart.find({});
+    const cart = await Cart.find({iduser: req.params.iduser});
 
     res.status(200).send({
         items: cart,
@@ -14,7 +14,16 @@ routerCart.get('/', async (req, res) => {
 
 routerCart.post('/', async (req, res) => {
     
-    const cartItem = await Cart.create(req.body);
+    const cartData = {
+        id: req.body.id,
+        iduser: req.body.iduser,
+        title: req.body.title,
+        price: req.body.price,
+        src: req.body.src,
+        quantity: req.body.quantity
+    };
+    
+    const cartItem = await Cart.create(cartData);
     const cart = await Cart.find({});
     
     res.status(201).send({
@@ -23,9 +32,9 @@ routerCart.post('/', async (req, res) => {
     });
 });
 
-routerCart.patch('/:id', async (req, res) => {
+routerCart.patch('/:id&:iduser', async (req, res) => {
     
-    await Cart.findOneAndUpdate({id: req.params.id}, req.body, {new: true}, async function(err, item) {
+    await Cart.findOneAndUpdate({id: req.params.id, iduser: req.params.iduser}, req.body, {new: true}, async function(err, item) {
         
         const cart = await Cart.find({});
         res.status(200).send({
@@ -35,9 +44,9 @@ routerCart.patch('/:id', async (req, res) => {
     });
 });
 
-routerCart.delete('/:id', async (req, res) => {
+routerCart.delete('/:id&:iduser', async (req, res) => {
     
-    await Cart.remove({id: req.params.id});
+    await Cart.remove({id: req.params.id, iduser: req.params.iduser});
     
     const cart = await Cart.find({});
 
