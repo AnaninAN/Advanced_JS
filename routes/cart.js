@@ -60,6 +60,7 @@ routerCart.delete('/', async (req, res) => {
     await Cart.remove();
 
     res.status(200).send({
+        item: [],
         total: 0
     });
 });

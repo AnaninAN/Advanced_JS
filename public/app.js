@@ -40,7 +40,7 @@ window.onload = () => {
     };
     
     Vue.component('header-shop',{
-        props: ['countproducts','cart','total','iduser','name'],
+        props: ['countproducts','cart','total','iduser','name','pagehtml'],
         template:`
         <div>
             <div class="row align-items-center">
@@ -51,7 +51,7 @@ window.onload = () => {
                     </a>
                 </div>
                 <div class="col-md-3 col-sm-7">
-                    <search-products @onsearch="handleSearch"></search-products>
+                    <search-products @onsearch="handleSearch" v-if="pagehtml === 'products'"></search-products>
                 </div>
                 <div class="col-md-4 col-sm-7 signReg">
                     <a href="#myModal" data-toggle="modal" v-if="!iduser.length" @click.prevent="signIn">Sign in</a>
@@ -61,7 +61,7 @@ window.onload = () => {
                     <a href="#" v-if="iduser.length" @click.prevent.stop="logout">log out</a>
                 </div>
                 <div class="col-md-2">
-                    <cart-btn class="btn-group basket" :countproducts="countproducts" :cart="cart" :total="total" :carthtml="false" @ondel="handleDelClick"></cart-btn>
+                    <cart-btn class="btn-group basket" :countproducts="countproducts" :cart="cart" :total="total" :carthtml="false" @ondel="handleDelClick" @ongotocart="goToCart"></cart-btn>
                 </div>
             </div>
         </div>
@@ -73,6 +73,10 @@ window.onload = () => {
             handleDelClick(item) {
                 this.$emit('ondel', item);
             },
+            goToCart() {
+                this.$emit('ongotocart');
+                console.log(3);
+            },
             signIn() {
                 this.$emit('onsignin');
             },
@@ -83,6 +87,13 @@ window.onload = () => {
                 this.$emit('onlogout');
             },
         },
+    });
+    
+    Vue.component('lk', {
+        props: [],
+        template:`
+
+        `
     });
     
     Vue.component('footer-shop',{
@@ -211,7 +222,7 @@ window.onload = () => {
             </button>
             <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" @click.stop>
                 <div class="dropdown-item">
-                    <cart class="cart" @ondel="handleDelClick" :cart="cart" :total="total"></cart>
+                    <cart class="cart" @ondel="handleDelClick" @ongotocart="goToCart" :cart="cart" :total="total"></cart>
                 </div>
             </div>
         </div>
@@ -219,6 +230,10 @@ window.onload = () => {
         methods: {
             handleDelClick(item) {
                 this.$emit('ondel', item);
+            },
+            goToCart() {
+                this.$emit('ongotocart');
+                console.log(2);
             },
         }
     });
@@ -376,12 +391,12 @@ window.onload = () => {
             </table>
             <div class="bodyCart__footer" v-if="cart.length && !carthtml">
                 <div class="totalCart">Total: <span>&#36;{{ total }}</span></div>
-                <a href="cart.html" class="btn btn-primary goToCart">go to cart</a>
+                <a href="#" class="btn btn-primary goToCart" @click.prevent="goToCart">go to cart</a>
             </div>
             <h3 v-if="!cart.length">Корзина пуста</h3>
             <div class="btnCart" v-if="carthtml">
                 <button type="button" class="btn btn-primary" v-if="cart.length" @click="handleDelAllCartClick">Clear shopping cart</button>
-                <a href="index.html" class="btn btn-primary">Continue shopping</a>
+                <a href="#" class="btn btn-primary" @click.prevent="goToProducts">Continue shopping</a>
             </div>
             <div class="grandTotal" v-if="cart.length && carthtml">
                 Grand total &#8195;<span>&#36;{{ total }}</span>
@@ -395,6 +410,13 @@ window.onload = () => {
             handleDelAllCartClick() {
                 this.$emit('ondelall');
             },
+            goToCart() {
+                this.$emit('ongotocart');
+                console.log(1);
+            },
+            goToProducts() {
+                this.$emit('ongotoprod');
+            },
         }
     });
     
@@ -407,6 +429,7 @@ window.onload = () => {
             display: 'none',
             idUser: '',
             signIn: true,
+            pageHtml: 'products',
             login: '',
             passwd1: '',
             passwd2: '',
@@ -446,6 +469,13 @@ window.onload = () => {
             },
         },
         methods: {
+            goToCart() {
+                this.pageHtml = 'cart';  
+            },
+            goToProducts() {
+                this.pageHtml = 'products';
+                window.scrollTo(0, 0);
+            },
             linkSignIn() {
                 this.warning = '';
                 this.signIn = true;
